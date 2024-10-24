@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<weapons>
+    <weapon>
+        <name>Basic Blaster</name>
+        <damage>10</damage>
+        <rarity>Common</rarity>
+    </weapon>
+    <weapon>
+        <name>Pulse Rifle</name>
+        <damage>15</damage>
+        <rarity>Common</rarity>
+    </weapon>
+    <weapon>
+        <name>Laser Cutter</name>
+        <damage>20</damage>
+        <rarity>Common</rarity>
+    </weapon>
+    <weapon>
+        <name>Plasma Gun</name>
+        <damage>25</damage>
+        <rarity>Uncommon</rarity>
+    </weapon>
+    <weapon>
+        <name>Ion Cannon</name>
+        <damage>30</damage>
+        <rarity>Uncommon</rarity>
+    </weapon>
+    <weapon>
+        <name>Shockwave Blaster</name>
+        <damage>35</damage>
+        <rarity>Uncommon</rarity>
+    </weapon>
+    <weapon>
+        <name>Fusion Rifle</name>
+        <damage>40</damage>
+        <rarity>Rare</rarity>
+    </weapon>
+    <weapon>
+        <name>Thunderbolt</name>
+        <damage>45</damage>
+        <rarity>Rare</rarity>
+    </weapon>
+    <weapon>
+        <name>Nova Cannon</name>
+        <damage>50</damage>
+        <rarity>Rare</rarity>
+    </weapon>
+    <weapon>
+        <name>Dark Matter Blaster</name>
+        <damage>60</damage>
+        <rarity>Epic</rarity>
+    </weapon>
+    <weapon>
+        <name>Void Ray</name>
+        <damage>65</damage>
+        <rarity>Epic</rarity>
+    </weapon>
+    <weapon>
+        <name>Starbreaker</name>
+        <damage>70</damage>
+        <rarity>Epic</rarity>
+    </weapon>
+    <weapon>
+        <name>Galactic Destroyer</name>
+        <damage>80</damage>
+        <rarity>Legendary</rarity>
+    </weapon>
+    <weapon>
+        <name>Excalibur</name>
+        <damage>85</damage>
+        <rarity>Legendary</rarity>
+    </weapon>
+    <weapon>
+        <name>Infinity Blade</name>
+        <damage>90</damage>
+        <rarity>Legendary</rarity>
+    </weapon>
+    <weapon>
+        <name>Celestial Cannon</name>
+        <damage>100</damage>
+        <rarity>Legendary</rarity>
+    </weapon>
+    <weapon>
+        <name>Crimson Fury</name>
+        <damage>95</damage>
+        <rarity>Legendary</rarity>
+    </weapon>
+    <weapon>
+        <name>Dragon's Breath</name>
+        <damage>75</damage>
+        <rarity>Epic</rarity>
+    </weapon>
+    <weapon>
+        <name>Quantum Annihilator</name>
+        <damage>110</damage>
+        <rarity>Legendary</rarity>
+    </weapon>
+    <weapon>
+        <name>Plasma Storm</name>
+        <damage>55</damage>
+        <rarity>Rare</rarity>
+    </weapon>
+    <weapon>
+        <name>Blazing Comet</name>
+        <damage>50</damage>
+        <rarity>Uncommon</rarity>
+    </weapon>
+</weapons>

@@ -1,0 +1,470 @@
+<game>
+    <stages>
+        <!-- Stage 1: The Geometric Arena -->
+        <stage id="1">
+            <name>Stage 1: The Geometric Arena</name>
+            <description>
+                Welcome to the Geometric Arena, where shapes collide in epic battles!
+            </description>
+            <levels>
+                <level id="1">
+                    <name>Level 1: The Simple Shapes</name>
+                    <difficulty>easy</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Circle Soldier</type>
+                            <health>20</health>
+                            <damage>5</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>50</gold>
+                        <xp>30</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>10</condition> <!-- 1*10*1 + 0 -->
+                    </conditions>
+                </level>
+
+                <level id="2">
+                    <name>Level 2: The Triangle Strike</name>
+                    <difficulty>easy</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Triangle Knight</type>
+                            <health>25</health>
+                            <damage>8</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>100</gold>
+                        <xp>60</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>20</condition> <!-- 1*10*2 + 0 -->
+                    </conditions>
+                </level>
+
+                <level id="3">
+                    <name>Level 3: The Square Conflict</name>
+                    <difficulty>easy</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Square Guardian</type>
+                            <health>30</health>
+                            <damage>10</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>150</gold>
+                        <xp>90</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>30</condition> <!-- 1*10*3 + 0 -->
+                    </conditions>
+                </level>
+
+                <level id="4">
+                    <name>Level 4: The Pentagon Challenge</name>
+                    <difficulty>medium</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Pentagon Warrior</type>
+                            <health>35</health>
+                            <damage>12</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>200</gold>
+                        <xp>120</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>40</condition> <!-- 1*10*4 + 0 -->
+                    </conditions>
+                </level>
+
+                <level id="5">
+                    <name>Level 5: The Hexagon Hordes</name>
+                    <difficulty>medium</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Hexagon Beast</type>
+                            <health>40</health>
+                            <damage>15</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>250</gold>
+                        <xp>150</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>50</condition> <!-- 1*10*5 + 0 -->
+                    </conditions>
+                </level>
+
+                <level id="6">
+                    <name>Level 6: The Octagon Battle</name>
+                    <difficulty>medium</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Octagon Brute</type>
+                            <health>45</health>
+                            <damage>18</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>300</gold>
+                        <xp>180</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>60</condition> <!-- 1*10*6 + 0 -->
+                    </conditions>
+                </level>
+
+                <level id="7">
+                    <name>Level 7: The Nonagon Fight</name>
+                    <difficulty>hard</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Nonagon Champion</type>
+                            <health>50</health>
+                            <damage>20</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>350</gold>
+                        <xp>220</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>70</condition> <!-- 1*10*7 + 0 -->
+                    </conditions>
+                </level>
+
+                <level id="8">
+                    <name>Level 8: The Decagon Terror</name>
+                    <difficulty>hard</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Decagon Master</type>
+                            <health>60</health>
+                            <damage>25</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>400</gold>
+                        <xp>300</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>80</condition> <!-- 1*10*8 + 0 -->
+                    </conditions>
+                </level>
+
+                <level id="9">
+                    <name>Level 9: The Dodecagon Battle</name>
+                    <difficulty>hard</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Dodecagon Guardian</type>
+                            <health>75</health>
+                            <damage>30</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>450</gold>
+                        <xp>350</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>90</condition> <!-- 1*10*9 + 0 -->
+                    </conditions>
+                </level>
+
+                <level id="10">
+                    <name>Level 10: The Ultimate Polygon (Boss)</name>
+                    <difficulty>hard</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Ultimate Polygon</type>
+                            <health>100</health>
+                            <damage>35</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>500</gold>
+                        <xp>500</xp>
+                        <special_item>Polygon Shield</special_item>
+                    </rewards>
+                    <conditions>
+                        <condition>100</condition> <!-- 1*10*10 + 0 -->
+                    </conditions>
+                </level>
+            </levels>
+        </stage>
+
+        <!-- Stage 2: The Geometric Labyrinth -->
+        <stage id="2">
+            <name>Stage 2: The Geometric Labyrinth</name>
+            <description>
+                The labyrinth is filled with geometric puzzles and fierce adversaries.
+            </description>
+            <levels>
+                <level id="1">
+                    <name>Level 1: The Labyrinth Entry</name>
+                    <difficulty>easy</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Labyrinth Guardian</type>
+                            <health>40</health>
+                            <damage>5</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>150</gold>
+                        <xp>100</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>110</condition> <!-- 2*10*1 + (1*10*10) -->
+                    </conditions>
+                </level>
+
+                <level id="2">
+                    <name>Level 2: The Twisted Path</name>
+                    <difficulty>easy</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Twisted Shape</type>
+                            <health>50</health>
+                            <damage>8</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>200</gold>
+                        <xp>150</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>120</condition> <!-- 2*10*2 + (1*10*10) -->
+                    </conditions>
+                </level>
+
+                <level id="3">
+                    <name>Level 3: The Maze Monster</name>
+                    <difficulty>medium</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Maze Beast</type>
+                            <health>60</health>
+                            <damage>10</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>250</gold>
+                        <xp>200</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>130</condition> <!-- 2*10*3 + (1*10*10) -->
+                    </conditions>
+                </level>
+
+                <level id="4">
+                    <name>Level 4: The Complex Conundrum</name>
+                    <difficulty>medium</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Conundrum Fiend</type>
+                            <health>70</health>
+                            <damage>12</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>300</gold>
+                        <xp>250</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>140</condition> <!-- 2*10*4 + (1*10*10) -->
+                    </conditions>
+                </level>
+
+                <level id="5">
+                    <name>Level 5: The Exit Guardian</name>
+                    <difficulty>hard</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Exit Protector</type>
+                            <health>80</health>
+                            <damage>15</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>350</gold>
+                        <xp>300</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>150</condition> <!-- 2*10*5 + (1*10*10) -->
+                    </conditions>
+                </level>
+
+                <level id="6">
+                    <name>Level 6: The Labyrinth Master</name>
+                    <difficulty>hard</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Labyrinth Overlord</type>
+                            <health>90</health>
+                            <damage>20</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>400</gold>
+                        <xp>400</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>160</condition> <!-- 2*10*6 + (1*10*10) -->
+                    </conditions>
+                </level>
+
+                <level id="7">
+                    <name>Level 7: The Illusive Shape</name>
+                    <difficulty>hard</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Illusive Shape</type>
+                            <health>100</health>
+                            <damage>25</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>450</gold>
+                        <xp>500</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>170</condition> <!-- 2*10*7 + (1*10*10) -->
+                    </conditions>
+                </level>
+
+                <level id="8">
+                    <name>Level 8: The Final Challenge (Boss)</name>
+                    <difficulty>hard</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Final Labyrinth Guardian</type>
+                            <health>120</health>
+                            <damage>30</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>500</gold>
+                        <xp>700</xp>
+                        <special_item>Labyrinth Key</special_item>
+                    </rewards>
+                    <conditions>
+                        <condition>180</condition> <!-- 2*10*8 + (1*10*10) -->
+                    </conditions>
+                </level>
+            </levels>
+        </stage>
+
+        <!-- Stage 3: The Ascending Peaks -->
+        <stage id="3">
+            <name>Stage 3: The Ascending Peaks</name>
+            <description>
+                Ascend to the peaks where danger lurks around every corner.
+            </description>
+            <levels>
+                <level id="1">
+                    <name>Level 1: The Base of the Mountain</name>
+                    <difficulty>easy</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Mountain Scout</type>
+                            <health>50</health>
+                            <damage>8</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>200</gold>
+                        <xp>150</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>190</condition> <!-- 3*10*1 + (2*10*10) -->
+                    </conditions>
+                </level>
+
+                <level id="2">
+                    <name>Level 2: The Rocky Trail</name>
+                    <difficulty>medium</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Rocky Beast</type>
+                            <health>60</health>
+                            <damage>10</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>250</gold>
+                        <xp>200</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>200</condition> <!-- 3*10*2 + (2*10*10) -->
+                    </conditions>
+                </level>
+
+                <level id="3">
+                    <name>Level 3: The Icy Summit</name>
+                    <difficulty>hard</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Icy Phantom</type>
+                            <health>80</health>
+                            <damage>12</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>300</gold>
+                        <xp>300</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>210</condition> <!-- 3*10*3 + (2*10*10) -->
+                    </conditions>
+                </level>
+
+                <level id="4">
+                    <name>Level 4: The Thunderstorm</name>
+                    <difficulty>hard</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Thunderstorm Elemental</type>
+                            <health>100</health>
+                            <damage>15</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>350</gold>
+                        <xp>400</xp>
+                    </rewards>
+                    <conditions>
+                        <condition>220</condition> <!-- 3*10*4 + (2*10*10) -->
+                    </conditions>
+                </level>
+
+                <level id="5">
+                    <name>Level 5: The Final Climb (Boss)</name>
+                    <difficulty>hard</difficulty>
+                    <enemies>
+                        <enemy>
+                            <type>Final Mountain Guardian</type>
+                            <health>150</health>
+                            <damage>30</damage>
+                        </enemy>
+                    </enemies>
+                    <rewards>
+                        <gold>500</gold>
+                        <xp>500</xp>
+                        <special_item>Mountain Ring</special_item>
+                    </rewards>
+                    <conditions>
+                        <condition>230</condition> <!-- 3*10*5 + (2*10*10) -->
+                    </conditions>
+                </level>
+            </levels>
+        </stage>
+    </stages>
+</game>
