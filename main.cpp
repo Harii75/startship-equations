@@ -190,6 +190,100 @@ bool load_weapons(Player& player) {
     return true;  // Return true if loading was successful
 }
 
+bool load_buffs(Player& player) {
+    tinyxml2::XMLDocument doc;
+    if (doc.LoadFile("data/buffs.xml") != tinyxml2::XML_SUCCESS) {
+        std::cerr << "Error loading XML file: " << doc.ErrorIDToName(doc.ErrorID()) << std::endl;
+        return false;
+    }
+
+    tinyxml2::XMLElement* buffsElement = doc.FirstChildElement("buffs");
+    if (!buffsElement) {
+        std::cerr << "No <buffs> element found in the XML file." << std::endl;
+        return false;
+    }
+
+    tinyxml2::XMLElement* buffElement = buffsElement->FirstChildElement("buff");
+    while (buffElement) {
+        const char* name = buffElement->FirstChildElement("name")->GetText();
+        const char* effect = buffElement->FirstChildElement("effect")->GetText();
+        int duration = buffElement->FirstChildElement("duration")->IntText();
+
+        std::cout << "Buff: " << (name ? name : "Unknown")
+                  << ", Effect: " << (effect ? effect : "Unknown")
+                  << ", Duration: " << duration << " seconds" << std::endl;
+
+        // Here you can add buffs to the player or ship as needed
+        buffElement = buffElement->NextSiblingElement("buff");
+    }
+
+    return true;
+}
+
+bool load_levels(Player& player) {
+    tinyxml2::XMLDocument doc;
+    if (doc.LoadFile("data/levels.xml") != tinyxml2::XML_SUCCESS) {
+        std::cerr << "Error loading XML file: " << doc.ErrorIDToName(doc.ErrorID()) << std::endl;
+        return false;
+    }
+
+    tinyxml2::XMLElement* levelsElement = doc.FirstChildElement("levels");
+    if (!levelsElement) {
+        std::cerr << "No <levels> element found in the XML file." << std::endl;
+        return false;
+    }
+
+    tinyxml2::XMLElement* levelElement = levelsElement->FirstChildElement("level");
+    while (levelElement) {
+        int level_number = levelElement->FirstChildElement("level_number")->IntText();
+        int xp_required = levelElement->FirstChildElement("xp_required")->IntText();
+        const char* reward = levelElement->FirstChildElement("reward")->GetText();
+
+        std::cout << "Level: " << level_number
+                  << ", XP Required: " << xp_required
+                  << ", Reward: " << (reward ? reward : "Unknown") << std::endl;
+
+        // Here you can check if the player qualifies for the next level
+        levelElement = levelElement->NextSiblingElement("level");
+    }
+
+    return true;
+}
+
+bool load_npcs(Player& player) {
+    tinyxml2::XMLDocument doc;
+    if (doc.LoadFile("data/npcs.xml") != tinyxml2::XML_SUCCESS) {
+        std::cerr << "Error loading XML file: " << doc.ErrorIDToName(doc.ErrorID()) << std::endl;
+        return false;
+    }
+
+    tinyxml2::XMLElement* npcsElement = doc.FirstChildElement("npcs");
+    if (!npcsElement) {
+        std::cerr << "No <npcs> element found in the XML file." << std::endl;
+        return false;
+    }
+
+    tinyxml2::XMLElement* npcElement = npcsElement->FirstChildElement("npc");
+    while (npcElement) {
+        const char* id = npcElement->FirstChildElement("id")->GetText();
+        const char* stage = npcElement->FirstChildElement("stage")->GetText();
+        const char* name = npcElement->FirstChildElement("name")->GetText();
+        const char* quest = npcElement->FirstChildElement("quest")->GetText();
+        const char* reward = npcElement->FirstChildElement("reward")->GetText();
+
+        std::cout << "NPC ID: " << (id ? id : "Unknown")
+                  << ", Stage: " << (stage ? stage : "Unknown")
+                  << ", Name: " << (name ? name : "Unknown")
+                  << ", Quest: " << (quest ? quest : "Unknown")
+                  << ", Reward: " << (reward ? reward : "Unknown") << std::endl;
+
+        // Here you can interact with NPCs as needed
+        npcElement = npcElement->NextSiblingElement("npc");
+    }
+
+    return true;
+}
+
 // Function to drop a random weapon from the player's inventory
 void drop_random_weapon(Player& player) {
     // Ensure the inventory is not empty
@@ -211,12 +305,36 @@ void drop_random_weapon(Player& player) {
 void game_menu(Player& player) {
     int choice = 0;
 
-    // Load weapons and display whether it was successful
+    //Load Weapons
     bool success = load_weapons(player);
     if (success) {
         std::cout << "\nWeapons loaded successfully!\n";
     } else {
         std::cout << "\nFailed to load weapons from XML file.\n";
+    }
+
+    // Load buffs
+    success = load_buffs(player);
+    if (success) {
+        std::cout << "\nBuffs loaded successfully!\n";
+    } else {
+        std::cout << "\nFailed to load buffs from XML file.\n";
+    }
+
+    // Load levels
+    success = load_levels(player);
+    if (success) {
+        std::cout << "\nLevels loaded successfully!\n";
+    } else {
+        std::cout << "\nFailed to load levels from XML file.\n";
+    }
+
+    // Load NPCs
+    success = load_npcs(player);
+    if (success) {
+        std::cout << "\nNPCs loaded successfully!\n";
+    } else {
+        std::cout << "\nFailed to load NPCs from XML file.\n";
     }
 
     do {
