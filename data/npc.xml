@@ -1,0 +1,72 @@
+<npcs>
+    <npc>
+        <id>1</id>
+        <stage>1</stage>
+        <name>Professor Numera</name>
+        <Quest>Help Professor Numera solve the Equation Puzzle to unlock the next area.</Quest>
+        <Reward>Buff: Calculation Focus</Reward>
+    </npc>
+    <npc>
+        <id>2</id>
+        <stage>1</stage>
+        <name>Mathilda the Wise</name>
+        <Quest>Gather 5 Math Crystals to enhance the village's knowledge.</Quest>
+        <Reward>Gold: 200</Reward>
+    </npc>
+    <npc>
+        <id>3</id>
+        <stage>2</stage>
+        <name>Commander Algebra</name>
+        <Quest>Defeat the Calculation Bandits to protect the town.</Quest>
+        <Reward>Buff: Math Mastery</Reward>
+    </npc>
+    <npc>
+        <id>4</id>
+        <stage>2</stage>
+        <name>Calculator Kai</name>
+        <Quest>Collect the lost Numerical Artifacts scattered in the area.</Quest>
+        <Reward>Item: Enhanced Calculator</Reward>
+    </npc>
+    <npc>
+        <id>5</id>
+        <stage>3</stage>
+        <name>Dr. Xegor Kiszámoló</name>
+        <Quest>Assist Dr. Kiszámoló in solving the Infinite Equation challenge.</Quest>
+        <Reward>Buff: Critical Thinking</Reward>
+    </npc>
+    <npc>
+        <id>6</id>
+        <stage>3</stage>
+        <name>Mathematical Mage</name>
+        <Quest>Help find the missing numbers to restore the balance in the Math Realm.</Quest>
+        <Reward>Gold: 500</Reward>
+    </npc>
+    <npc>
+        <id>7</id>
+        <stage>3</stage>
+        <name>Algorithm Alana</name>
+        <Quest>Gather data on enemy calculations and report back.</Quest>
+        <Reward>Item: Algorithm Book</Reward>
+    </npc>
+    <npc>
+        <id>8</id>
+        <stage>3</stage>
+        <name>Logic Liza</name>
+        <Quest>Help Logic Liza with her Logic Puzzles.</Quest>
+        <Reward>Buff: Enhanced Logic</Reward>
+    </npc>
+    <npc>
+        <id>9</id>
+        <stage>3</stage>
+        <name>Calculus Carl</name>
+        <Quest>Defeat the Calculus Beast terrorizing the area.</Quest>
+        <Reward>Buff: Strategic Mind</Reward>
+    </npc>
+    <npc>
+        <id>10</id>
+        <stage>3</stage>
+        <name>Geometric Greg</name>
+        <Quest>Collect the Geometric Shapes to unlock the treasure.</Quest>
+        <Reward>Item: Geometric Compass</Reward>
+    </npc>
+</npcs>

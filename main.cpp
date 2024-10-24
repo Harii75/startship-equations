@@ -6,6 +6,7 @@
 #include <ctime>
 #include "tinyxml2.h"
 
+
 class Player;
 void main_menu();
 void game_menu(Player& player);
@@ -19,8 +20,8 @@ public:
     ShipManager() : storage_capacity(100), health(100), damage(50) {}
 
     void upgrade_ship() {
-        storage_capacity += 50;
-        std::cout << "Ship expanded! New capacity: " << storage_capacity << "\n";
+        health += 25;
+        std::cout << "Ship expanded! New capacity: " << health << "\n";
     }
 
     void repair_ship() {
@@ -63,7 +64,7 @@ public:
             std::cout << "Your inventory is empty.\n";
         } else {
             for (const auto& item : items) {
-                std::cout << "- " << item.first << " (" << item.second << ")\n"; // Display item name and type
+                std::cout << "- " << item.first << " (" << item.second << ")\n";
             }
         }
     }
@@ -95,7 +96,7 @@ public:
     int gold;
     int level;
     int xp;
-    int knowledge; // New knowledge point
+    int knowledge;
     ShipManager* ship;
     InventoryManager* inventory;
 
@@ -151,7 +152,6 @@ void main_menu() {
     } while (choice != 3);
 }
 
-// Load and print weapons from the XML file
 bool load_weapons(Player& player) {
     tinyxml2::XMLDocument doc;
 
@@ -184,7 +184,7 @@ bool load_weapons(Player& player) {
         // Add the weapon to the player's inventory
         player.inventory->add_item(name, "weapon");
 
-        weaponElement = weaponElement->NextSiblingElement("weapon"); // Move to the next weapon
+        weaponElement = weaponElement->NextSiblingElement("weapon");
     }
 
     return true;  // Return true if loading was successful
