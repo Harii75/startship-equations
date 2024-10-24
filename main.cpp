@@ -3,9 +3,9 @@
 #include <vector>
 #include <algorithm>
 #include <cstdlib>
+#include <ctime>
 
 class Player;
-// Function prototypes
 void clear_screen();
 void main_menu();
 void game_menu(Player& player);
@@ -95,10 +95,11 @@ public:
     int gold;
     int level;
     int xp;
+    int knowledge; // New knowledge point
     ShipManager* ship;
     InventoryManager* inventory;
 
-    Player(const std::string& name) : name(name), gold(500), level(1), xp(0) {
+    Player(const std::string& name) : name(name), gold(500), level(1), xp(0), knowledge(0) {
         ship = new ShipManager();
         inventory = new InventoryManager();
     }
@@ -107,6 +108,7 @@ public:
         std::cout << "######################################################\n";
         std::cout << "#                 Captain: " << name << "             #\n";
         std::cout << "#   Gold: " << gold << "   Level: " << level << "   XP: " << xp << "/240  #\n";
+        std::cout << "#   Knowledge: " << knowledge << "                               #\n";
         std::cout << "######################################################\n";
     }
 
@@ -197,10 +199,50 @@ void game_menu(Player& player) {
                     std::cout << "You have no items to sell.\n";
                 }
                 break;
-            case 5:
+            case 5: {
                 std::cout << "Exploring...\n";
-                // Implement exploring logic here
+                int explore_outcome = rand() % 3; // Random number for exploration outcome
+                player.knowledge += 10; // Instant knowledge point for exploring
+
+                switch (explore_outcome) {
+                    case 0:
+                        std::cout << "You found nothing.\n";
+                        break;
+                    case 1:
+                        std::cout << "You found free loot!\n";
+                        player.inventory->add_item("Free Loot", "resource");
+                        break;
+                    case 2: {
+                        std::cout << "Ship collides with an asteroid! Solve the equation to save the ship:\n";
+                        // Generate a random equation
+                        int a = rand() % 10 + 1;
+                        int b = rand() % 10 + 1;
+                        int answer = a + b; // Example: solve a + b
+
+                        std::cout << "What is " << a << " + " << b << "? ";
+                        int player_answer;
+                        std::cin >> player_answer;
+
+                        if (player_answer == answer) {
+                            std::cout << "Correct! You saved the ship. +10 exploration knowledge.\n";
+                            player.knowledge += 10; // Gain exploration knowledge
+                        } else {
+                            std::cout << "Incorrect! The ship takes damage.\n";
+                            player.ship->health -= 50; // Ship takes damage
+                            std::cout << "Ship health: " << player.ship->health << "\n";
+
+                            if (player.ship->health <= 0) {
+                                std::cout << "Game Over! Your ship has been destroyed.\n";
+                                exit(0);
+                            }
+                        }
+                        break;
+                    }
+                    default:
+                        break;
+                }
                 break;
+            }
             case 6:
                 std::cout << "Exiting game...\n";
                 break;
@@ -209,12 +251,11 @@ void game_menu(Player& player) {
                 break;
         }
 
-        std::cout << "Status updated!\n"; // Status display after each option
-
     } while (choice != 6);
 }
 
 int main() {
+    srand(static_cast<unsigned int>(time(0))); // Seed for random number generation
     main_menu();
     return 0;
 }
