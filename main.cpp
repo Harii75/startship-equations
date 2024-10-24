@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include "tinyxml2.h"
 
 class Player;
 void main_menu();
@@ -150,9 +151,73 @@ void main_menu() {
     } while (choice != 3);
 }
 
+// Load and print weapons from the XML file
+bool load_weapons(Player& player) {
+    tinyxml2::XMLDocument doc;
+
+    // Load the XML file
+    if (doc.LoadFile("data/weapons.xml") != tinyxml2::XML_SUCCESS) {
+        std::cerr << "Error loading XML file: " << doc.ErrorIDToName(doc.ErrorID()) << std::endl;
+        return false;  // Return false if loading fails
+    }
+
+    // Find the root element (assumed to be <weapons>)
+    tinyxml2::XMLElement* weaponsElement = doc.FirstChildElement("weapons");
+    if (!weaponsElement) {
+        std::cerr << "No <weapons> element found in the XML file." << std::endl;
+        return false;  // Return false if no <weapons> element is found
+    }
+
+    // Iterate through each <weapon> element
+    tinyxml2::XMLElement* weaponElement = weaponsElement->FirstChildElement("weapon");
+    while (weaponElement) {
+        const char* name = weaponElement->FirstChildElement("name")->GetText();
+        int damage = weaponElement->FirstChildElement("damage")->IntText();
+        const char* rarity = weaponElement->FirstChildElement("rarity")->GetText();
+
+        // Print weapon details
+        std::cout << "Weapon: " << (name ? name : "Unknown")
+                  << ", Damage: " << damage
+                  << ", Rarity: " << (rarity ? rarity : "Unknown")
+                  << std::endl;
+
+        // Add the weapon to the player's inventory
+        player.inventory->add_item(name, "weapon");
+
+        weaponElement = weaponElement->NextSiblingElement("weapon"); // Move to the next weapon
+    }
+
+    return true;  // Return true if loading was successful
+}
+
+// Function to drop a random weapon from the player's inventory
+void drop_random_weapon(Player& player) {
+    // Ensure the inventory is not empty
+    if (player.inventory->items.empty()) {
+        std::cout << "No weapons available to drop.\n";
+        return;
+    }
+
+    // Randomly select a weapon from the player's inventory
+    int random_index = rand() % player.inventory->items.size();
+    std::string dropped_weapon = player.inventory->items[random_index].first;
+
+    // Add the dropped weapon to the player's inventory
+    std::cout << "You dropped a random weapon: " << dropped_weapon << "\n";
+    player.inventory->sell_item(dropped_weapon); // Optionally remove it from inventory
+}
+
 // In-game menu options
 void game_menu(Player& player) {
     int choice = 0;
+
+    // Load weapons and display whether it was successful
+    bool success = load_weapons(player);
+    if (success) {
+        std::cout << "\nWeapons loaded successfully!\n";
+    } else {
+        std::cout << "\nFailed to load weapons from XML file.\n";
+    }
 
     do {
         player.display_stats();
@@ -191,63 +256,35 @@ void game_menu(Player& player) {
                     std::cout << "You have no items to sell.\n";
                 }
                 break;
-            case 5: {
-                std::cout << "Exploring...\n";
-                int explore_outcome = rand() % 3; // Random number for exploration outcome
-                player.knowledge += 10; // Instant knowledge point for exploring
-
-                switch (explore_outcome) {
+            case 5:
+            {
+                int random_event = rand() % 3;
+                switch (random_event) {
                     case 0:
-                        std::cout << "You found nothing.\n";
+                        std::cout << "You found a treasure chest!\n";
                         break;
                     case 1:
-                        std::cout << "You found free loot!\n";
-                        player.inventory->add_item("Free Loot", "resource");
+                        std::cout << "You found some resources!\n";
                         break;
-                    case 2: {
-                        std::cout << "Ship collides with an asteroid! Solve the equation to save the ship:\n";
-                        // Generate a random equation
-                        int a = rand() % 10 + 1;
-                        int b = rand() % 10 + 1;
-                        int answer = a + b; // Example: solve a + b
-
-                        std::cout << "What is " << a << " + " << b << "? ";
-                        int player_answer;
-                        std::cin >> player_answer;
-
-                        if (player_answer == answer) {
-                            std::cout << "Correct! You saved the ship. +10 exploration knowledge.\n";
-                            player.knowledge += 10; // Gain exploration knowledge
-                        } else {
-                            std::cout << "Incorrect! The ship takes damage.\n";
-                            player.ship->health -= 50; // Ship takes damage
-                            std::cout << "Ship health: " << player.ship->health << "\n";
-
-                            if (player.ship->health <= 0) {
-                                std::cout << "Game Over! Your ship has been destroyed.\n";
-                                exit(0);
-                            }
-                        }
-                        break;
-                    }
-                    default:
+                    case 2:
+                        std::cout << "You encountered a mysterious object!\n";
+                        drop_random_weapon(player); // Call the function to drop a random weapon
                         break;
                 }
                 break;
             }
             case 6:
-                std::cout << "Exiting game...\n";
+                std::cout << "Exiting...\n";
                 break;
             default:
-                std::cout << "Invalid option, try again.\n";
+                std::cout << "Invalid choice, please try again.\n";
                 break;
         }
-
     } while (choice != 6);
 }
 
 int main() {
-    srand(static_cast<unsigned int>(time(0))); // Seed for random number generation
+    srand(static_cast<unsigned int>(time(0))); // Seed random number generator
     main_menu();
     return 0;
 }
