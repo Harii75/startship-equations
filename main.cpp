@@ -6,7 +6,6 @@
 #include <ctime>
 
 class Player;
-void clear_screen();
 void main_menu();
 void game_menu(Player& player);
 
@@ -118,14 +117,8 @@ public:
     }
 };
 
-// Clear screen function
-void clear_screen() {
-    system("clear || cls"); // Works for Linux and Windows
-}
-
 // Main menu options
 void main_menu() {
-    clear_screen();
     int choice = 0;
     do {
         std::cout << "\nMain Menu:\n";
@@ -162,7 +155,6 @@ void game_menu(Player& player) {
     int choice = 0;
 
     do {
-        clear_screen();
         player.display_stats();
         player.inventory->show_inventory();
         player.ship->show_info();
