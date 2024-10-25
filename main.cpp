@@ -14,18 +14,20 @@ void game_menu(Player& player);
 class ShipManager {
 public:
     int storage_capacity;
-    int health;
+    int maxHealth;
+    int currentHealth;
     int damage;
 
-    ShipManager() : storage_capacity(100), health(100), damage(50) {}
+    ShipManager() : storage_capacity(100), currentHealth(100), damage(50), maxHealth(100) {}
 
     void upgrade_ship() {
-        health += 25;
-        std::cout << "Ship expanded! New capacity: " << health << "\n";
+        maxHealth += 25;
+        currentHealth += 25;
+        std::cout << "Ship upgraded! New health: " << currentHealth << "/" << maxHealth << "\n";
     }
 
     void repair_ship() {
-        health = 100;
+        currentHealth = maxHealth;
         std::cout << "Ship fully repaired!\n";
     }
 
@@ -37,20 +39,16 @@ public:
     void show_info() {
         std::cout << "Ship info:\n";
         std::cout << " - Capacity: " << storage_capacity << "\n";
-        std::cout << " - Health: " << health << "\n";
+        std::cout << " - Health: " << currentHealth << "/" << maxHealth <<"\n";
         std::cout << " - Damage: " << damage << "\n";
     }
 };
 
 class InventoryManager {
 public:
-    std::vector<std::pair<std::string, std::string>> items; // Pair of item name and type
+    std::vector<std::pair<std::string, std::string>> items;
 
     InventoryManager() {
-        // Initial items with types
-        items.emplace_back("Laser Cannon", "weapon");
-        items.emplace_back("Shield Booster", "buff");
-        items.emplace_back("Energy Cells", "resource");
     }
 
     void add_item(const std::string& item, const std::string& type) {
@@ -64,11 +62,11 @@ public:
             std::cout << "Your inventory is empty.\n";
         } else {
             for (const auto& item : items) {
-                std::cout << "- " << item.first << " (" << item.second << ")\n";
+                std::cout << "-" << item.first << " (" << item.second << ")\n";
             }
         }
     }
-
+    //Pályátol függő ez majd javitandó
     bool can_trade() {
         return !items.empty();
     }
@@ -107,11 +105,14 @@ public:
 
     void display_stats() {
         std::cout << "######################################################\n";
-        std::cout << "#                 Captain: " << name << "             #\n";
-        std::cout << "#   Gold: " << gold << "   Level: " << level << "   XP: " << xp << "/240  #\n";
-        std::cout << "#   Knowledge: " << knowledge << "                               #\n";
+        std::cout << "                 Captain: " << name << "             \n";
+        std::cout << "   Gold: " << gold << "\t\t\tLevel: " << level << "   XP: " << xp << "/240  \n";
+        std::cout << "   Dagamge: " << ship->damage <<  "\t\t\tHealth: " << ship->currentHealth <<"/" << ship->maxHealth << "\n";
+        std::cout << "   Stage: [ x - y ]\t\tKnowledge: " << knowledge << " \n";
         std::cout << "######################################################\n";
     }
+
+    //Levelup function kellene
 
     ~Player() {
         delete ship;
@@ -119,7 +120,6 @@ public:
     }
 };
 
-// Main menu options
 void main_menu() {
     int choice = 0;
     do {
@@ -158,35 +158,15 @@ bool load_weapons(Player& player) {
     // Load the XML file
     if (doc.LoadFile("data/weapons.xml") != tinyxml2::XML_SUCCESS) {
         std::cerr << "Error loading XML file: " << doc.ErrorIDToName(doc.ErrorID()) << std::endl;
-        return false;  // Return false if loading fails
+        return false;
     }
 
     // Find the root element (assumed to be <weapons>)
     tinyxml2::XMLElement* weaponsElement = doc.FirstChildElement("weapons");
     if (!weaponsElement) {
         std::cerr << "No <weapons> element found in the XML file." << std::endl;
-        return false;  // Return false if no <weapons> element is found
+        return false;
     }
-
-    // Iterate through each <weapon> element
-    tinyxml2::XMLElement* weaponElement = weaponsElement->FirstChildElement("weapon");
-    while (weaponElement) {
-        const char* name = weaponElement->FirstChildElement("name")->GetText();
-        int damage = weaponElement->FirstChildElement("damage")->IntText();
-        const char* rarity = weaponElement->FirstChildElement("rarity")->GetText();
-
-        // Print weapon details
-        std::cout << "Weapon: " << (name ? name : "Unknown")
-                  << ", Damage: " << damage
-                  << ", Rarity: " << (rarity ? rarity : "Unknown")
-                  << std::endl;
-
-        // Add the weapon to the player's inventory
-        player.inventory->add_item(name, "weapon");
-
-        weaponElement = weaponElement->NextSiblingElement("weapon");
-    }
-
     return true;  // Return true if loading was successful
 }
 
@@ -202,21 +182,6 @@ bool load_buffs(Player& player) {
         std::cerr << "No <buffs> element found in the XML file." << std::endl;
         return false;
     }
-
-    tinyxml2::XMLElement* buffElement = buffsElement->FirstChildElement("buff");
-    while (buffElement) {
-        const char* name = buffElement->FirstChildElement("name")->GetText();
-        const char* effect = buffElement->FirstChildElement("effect")->GetText();
-        int duration = buffElement->FirstChildElement("duration")->IntText();
-
-        std::cout << "Buff: " << (name ? name : "Unknown")
-                  << ", Effect: " << (effect ? effect : "Unknown")
-                  << ", Duration: " << duration << " seconds" << std::endl;
-
-        // Here you can add buffs to the player or ship as needed
-        buffElement = buffElement->NextSiblingElement("buff");
-    }
-
     return true;
 }
 
@@ -252,7 +217,7 @@ bool load_levels(Player& player) {
 
 bool load_npcs(Player& player) {
     tinyxml2::XMLDocument doc;
-    if (doc.LoadFile("data/npcs.xml") != tinyxml2::XML_SUCCESS) {
+    if (doc.LoadFile("data/npc.xml") != tinyxml2::XML_SUCCESS) {
         std::cerr << "Error loading XML file: " << doc.ErrorIDToName(doc.ErrorID()) << std::endl;
         return false;
     }
@@ -262,50 +227,13 @@ bool load_npcs(Player& player) {
         std::cerr << "No <npcs> element found in the XML file." << std::endl;
         return false;
     }
-
-    tinyxml2::XMLElement* npcElement = npcsElement->FirstChildElement("npc");
-    while (npcElement) {
-        const char* id = npcElement->FirstChildElement("id")->GetText();
-        const char* stage = npcElement->FirstChildElement("stage")->GetText();
-        const char* name = npcElement->FirstChildElement("name")->GetText();
-        const char* quest = npcElement->FirstChildElement("quest")->GetText();
-        const char* reward = npcElement->FirstChildElement("reward")->GetText();
-
-        std::cout << "NPC ID: " << (id ? id : "Unknown")
-                  << ", Stage: " << (stage ? stage : "Unknown")
-                  << ", Name: " << (name ? name : "Unknown")
-                  << ", Quest: " << (quest ? quest : "Unknown")
-                  << ", Reward: " << (reward ? reward : "Unknown") << std::endl;
-
-        // Here you can interact with NPCs as needed
-        npcElement = npcElement->NextSiblingElement("npc");
-    }
-
     return true;
 }
 
-// Function to drop a random weapon from the player's inventory
-void drop_random_weapon(Player& player) {
-    // Ensure the inventory is not empty
-    if (player.inventory->items.empty()) {
-        std::cout << "No weapons available to drop.\n";
-        return;
-    }
-
-    // Randomly select a weapon from the player's inventory
-    int random_index = rand() % player.inventory->items.size();
-    std::string dropped_weapon = player.inventory->items[random_index].first;
-
-    // Add the dropped weapon to the player's inventory
-    std::cout << "You dropped a random weapon: " << dropped_weapon << "\n";
-    player.inventory->sell_item(dropped_weapon); // Optionally remove it from inventory
-}
-
-// In-game menu options
 void game_menu(Player& player) {
     int choice = 0;
 
-    //Load Weapons
+    /* Load Weapons */
     bool success = load_weapons(player);
     if (success) {
         std::cout << "\nWeapons loaded successfully!\n";
@@ -321,13 +249,6 @@ void game_menu(Player& player) {
         std::cout << "\nFailed to load buffs from XML file.\n";
     }
 
-    // Load levels
-    success = load_levels(player);
-    if (success) {
-        std::cout << "\nLevels loaded successfully!\n";
-    } else {
-        std::cout << "\nFailed to load levels from XML file.\n";
-    }
 
     // Load NPCs
     success = load_npcs(player);
@@ -337,10 +258,18 @@ void game_menu(Player& player) {
         std::cout << "\nFailed to load NPCs from XML file.\n";
     }
 
+
+
+    // Load levels
+    success = load_levels(player);
+    if (success) {
+        std::cout << "\nLevels loaded successfully!\n";
+    } else {
+        std::cout << "\nFailed to load levels from XML file.\n";
+    }
+
     do {
         player.display_stats();
-        player.inventory->show_inventory();
-        player.ship->show_info();
 
         std::cout << "\nGame Menu:\n";
         std::cout << "1. Continue Quest\n";
@@ -386,7 +315,6 @@ void game_menu(Player& player) {
                         break;
                     case 2:
                         std::cout << "You encountered a mysterious object!\n";
-                        drop_random_weapon(player); // Call the function to drop a random weapon
                         break;
                 }
                 break;
