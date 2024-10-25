@@ -18,6 +18,27 @@ public:
     int damage;
 };
 
+struct Weapon {
+    std::string name;
+    int damage;
+    std::string rarity;
+};
+
+struct Buff {
+    int id;
+    std::string name;
+    int duration;
+    std::string effect;
+};
+
+struct NPC {
+    int id;
+    int stage;
+    std::string name;
+    std::string quest;
+    std::string reward;
+};
+
 class Reward {
 public:
     int gold;
@@ -46,6 +67,8 @@ public:
     std::string description;
     std::vector<Level> levels;
 };
+
+
 
 
 class ShipManager {
@@ -189,37 +212,83 @@ void main_menu() {
     } while (choice != 3);
 }
 
-bool load_weapons(Player& player) {
+std::vector<Weapon> loadWeaponsFromXML(const std::string& filePath) {
+    std::vector<Weapon> weapons;
     tinyxml2::XMLDocument doc;
 
-    // Load the XML file
-    if (doc.LoadFile("data/weapons.xml") != tinyxml2::XML_SUCCESS) {
+    if (doc.LoadFile(filePath.c_str()) != tinyxml2::XML_SUCCESS) {
         std::cerr << "Error loading XML file: " << doc.ErrorIDToName(doc.ErrorID()) << std::endl;
-        return false;
+        return weapons; // Return empty vector on failure
     }
 
-    // Find the root element (assumed to be <weapons>)
     tinyxml2::XMLElement* weaponsElement = doc.FirstChildElement("weapons");
     if (!weaponsElement) {
         std::cerr << "No <weapons> element found in the XML file." << std::endl;
-        return false;
+        return weapons; // Return empty vector if no weapons element is found
     }
-    return true;  // Return true if loading was successful
+
+    // Iterate through each <weapon> element
+    for (tinyxml2::XMLElement* weaponElement = weaponsElement->FirstChildElement("weapon");
+         weaponElement != nullptr; weaponElement = weaponElement->NextSiblingElement("weapon")) {
+
+        Weapon weapon;
+
+        const char* name = weaponElement->FirstChildElement("name")->GetText();
+        if (name) {
+            weapon.name = name;
+        }
+
+        weaponElement->FirstChildElement("damage")->QueryIntText(&weapon.damage);
+
+        const char* rarity = weaponElement->FirstChildElement("rarity")->GetText();
+        if (rarity) {
+            weapon.rarity = rarity;
+        }
+
+        weapons.push_back(weapon);
+    }
+
+    return weapons; // Return the vector of weapons
 }
 
-bool load_buffs(Player& player) {
+std::vector<Buff> loadBuffsFromXML(const std::string& filePath) {
+    std::vector<Buff> buffs;
     tinyxml2::XMLDocument doc;
-    if (doc.LoadFile("data/buffs.xml") != tinyxml2::XML_SUCCESS) {
+
+    if (doc.LoadFile(filePath.c_str()) != tinyxml2::XML_SUCCESS) {
         std::cerr << "Error loading XML file: " << doc.ErrorIDToName(doc.ErrorID()) << std::endl;
-        return false;
+        return buffs; // Return empty vector on failure
     }
 
     tinyxml2::XMLElement* buffsElement = doc.FirstChildElement("buffs");
     if (!buffsElement) {
         std::cerr << "No <buffs> element found in the XML file." << std::endl;
-        return false;
+        return buffs; // Return empty vector if no buffs element is found
     }
-    return true;
+
+    // Iterate through each <buff> element
+    for (tinyxml2::XMLElement* buffElement = buffsElement->FirstChildElement("buff");
+         buffElement != nullptr; buffElement = buffElement->NextSiblingElement("buff")) {
+
+        Buff buff;
+        buffElement->FirstChildElement("id")->QueryIntText(&buff.id);
+
+        const char* name = buffElement->FirstChildElement("name")->GetText();
+        if (name) {
+            buff.name = name;
+        }
+
+        buffElement->FirstChildElement("duration")->QueryIntText(&buff.duration);
+
+        const char* effect = buffElement->FirstChildElement("effect")->GetText();
+        if (effect) {
+            buff.effect = effect;
+        }
+
+        buffs.push_back(buff);
+    }
+
+    return buffs; // Return the vector of buffs
 }
 
 std::vector<Stage> loadStagesFromXML(const std::string& filePath) {
@@ -277,19 +346,49 @@ std::vector<Stage> loadStagesFromXML(const std::string& filePath) {
     return stages;
 }
 
-bool load_npcs(Player& player) {
+std::vector<NPC> loadNpcsFromXML(const std::string& filePath) {
+    std::vector<NPC> npcs;
     tinyxml2::XMLDocument doc;
-    if (doc.LoadFile("data/npc.xml") != tinyxml2::XML_SUCCESS) {
+
+    if (doc.LoadFile(filePath.c_str()) != tinyxml2::XML_SUCCESS) {
         std::cerr << "Error loading XML file: " << doc.ErrorIDToName(doc.ErrorID()) << std::endl;
-        return false;
+        return npcs; // Return empty vector on failure
     }
 
     tinyxml2::XMLElement* npcsElement = doc.FirstChildElement("npcs");
     if (!npcsElement) {
         std::cerr << "No <npcs> element found in the XML file." << std::endl;
-        return false;
+        return npcs; // Return empty vector if no npcs element is found
     }
-    return true;
+
+    // Iterate through each <npc> element
+    for (tinyxml2::XMLElement* npcElement = npcsElement->FirstChildElement("npc");
+         npcElement != nullptr; npcElement = npcElement->NextSiblingElement("npc")) {
+
+        NPC npc;
+
+        npcElement->FirstChildElement("id")->QueryIntText(&npc.id);
+        npcElement->FirstChildElement("stage")->QueryIntText(&npc.stage);
+
+        const char* name = npcElement->FirstChildElement("name")->GetText();
+        if (name) {
+            npc.name = name;
+        }
+
+        const char* quest = npcElement->FirstChildElement("Quest")->GetText();
+        if (quest) {
+            npc.quest = quest;
+        }
+
+        const char* reward = npcElement->FirstChildElement("Reward")->GetText();
+        if (reward) {
+            npc.reward = reward;
+        }
+
+        npcs.push_back(npc);
+    }
+
+    return npcs; // Return the vector of NPCs
 }
 
 void printStages(const std::vector<Stage>& stages) {
@@ -304,12 +403,43 @@ void printStages(const std::vector<Stage>& stages) {
     }
 }
 
+void printBuffs(const std::vector<Buff>& buffs) {
+    for (const auto& buff : buffs) {
+        std::cout << "Buff ID: " << buff.id << std::endl;
+        std::cout << "Name: " << buff.name << std::endl;
+        std::cout << "Duration: " << buff.duration << std::endl;
+        std::cout << "Effect: " << buff.effect << std::endl;
+        std::cout << "--------------------" << std::endl;
+    }
+}
+
+void printWeapons(const std::vector<Weapon>& weapons) {
+    for (const auto& weapon : weapons) {
+        std::cout << "Weapon Name: " << weapon.name << std::endl;
+        std::cout << "Damage: " << weapon.damage << std::endl;
+        std::cout << "Rarity: " << weapon.rarity << std::endl;
+        std::cout << "--------------------" << std::endl;
+    }
+}
+
+void printNpcs(const std::vector<NPC>& npcs) {
+    for (const auto& npc : npcs) {
+        std::cout << "NPC ID: " << npc.id << std::endl;
+        std::cout << "Stage: " << npc.stage << std::endl;
+        std::cout << "Name: " << npc.name << std::endl;
+        std::cout << "Quest: " << npc.quest << std::endl;
+        std::cout << "Reward: " << npc.reward << std::endl;
+        std::cout << "--------------------" << std::endl;
+    }
+}
+
 void game_menu(Player& player) {
     int choice = 0;
 
-
-    const std::string xmlFilePath = "./data/levels.xml";
-    std::vector<Stage> stages = loadStagesFromXML(xmlFilePath);
+    std::vector<Weapon> weapons = loadWeaponsFromXML("data/weapons.xml");
+    std::vector<Stage> stages = loadStagesFromXML("data/levels.xml");
+    std::vector<Buff> buffs = loadBuffsFromXML("data/buffs.xml");
+    std::vector<NPC> npcs = loadNpcsFromXML("data/npc.xml");
 
     do {
         player.display_stats();
