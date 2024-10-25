@@ -11,6 +11,43 @@ class Player;
 void main_menu();
 void game_menu(Player& player);
 
+class Enemy {
+public:
+    std::string type;
+    int health;
+    int damage;
+};
+
+class Reward {
+public:
+    int gold;
+    int xp;
+    std::string special_item;
+};
+
+class Condition {
+public:
+    int condition_value;
+};
+
+class Level {
+public:
+    std::string name;
+    std::string difficulty;
+    std::vector<Enemy> enemies;
+    Reward rewards;
+    std::vector<Condition> conditions;
+};
+
+class Stage {
+public:
+    int id;
+    std::string name;
+    std::string description;
+    std::vector<Level> levels;
+};
+
+
 class ShipManager {
 public:
     int storage_capacity;
@@ -185,34 +222,59 @@ bool load_buffs(Player& player) {
     return true;
 }
 
-bool load_levels(Player& player) {
+std::vector<Stage> loadStagesFromXML(const std::string& filePath) {
+    std::vector<Stage> stages;
+
     tinyxml2::XMLDocument doc;
-    if (doc.LoadFile("data/levels.xml") != tinyxml2::XML_SUCCESS) {
-        std::cerr << "Error loading XML file: " << doc.ErrorIDToName(doc.ErrorID()) << std::endl;
-        return false;
+    if (doc.LoadFile(filePath.c_str()) != tinyxml2::XML_SUCCESS) {
+        std::cerr << "Error loading XML file: " << filePath << std::endl;
+        return stages;
     }
 
-    tinyxml2::XMLElement* levelsElement = doc.FirstChildElement("levels");
-    if (!levelsElement) {
-        std::cerr << "No <levels> element found in the XML file." << std::endl;
-        return false;
+    // Navigate to the stages element
+    tinyxml2::XMLElement* stagesElement = doc.FirstChildElement("game")->FirstChildElement("stages");
+    for (tinyxml2::XMLElement* stageElement = stagesElement->FirstChildElement("stage"); stageElement != nullptr; stageElement = stageElement->NextSiblingElement("stage")) {
+        Stage stage;
+        stage.id = stageElement->IntAttribute("id");
+        stage.name = stageElement->FirstChildElement("name")->GetText();
+        stage.description = stageElement->FirstChildElement("description")->GetText();
+
+        // Parse levels
+        for (tinyxml2::XMLElement* levelElement = stageElement->FirstChildElement("levels")->FirstChildElement("level"); levelElement != nullptr; levelElement = levelElement->NextSiblingElement("level")) {
+            Level level;
+            level.name = levelElement->FirstChildElement("name")->GetText();
+            level.difficulty = levelElement->FirstChildElement("difficulty")->GetText();
+
+            // Parse enemies
+            for (tinyxml2::XMLElement* enemyElement = levelElement->FirstChildElement("enemies")->FirstChildElement("enemy"); enemyElement != nullptr; enemyElement = enemyElement->NextSiblingElement("enemy")) {
+                Enemy enemy;
+                enemy.type = enemyElement->FirstChildElement("type")->GetText();
+                enemy.health = enemyElement->IntAttribute("health");
+                enemy.damage = enemyElement->IntAttribute("damage");
+                level.enemies.push_back(enemy);
+            }
+
+            // Parse rewards
+            level.rewards.gold = levelElement->FirstChildElement("rewards")->FirstChildElement("gold")->IntText();
+            level.rewards.xp = levelElement->FirstChildElement("rewards")->FirstChildElement("xp")->IntText();
+            if (levelElement->FirstChildElement("rewards")->FirstChildElement("special_item")) {
+                level.rewards.special_item = levelElement->FirstChildElement("rewards")->FirstChildElement("special_item")->GetText();
+            }
+
+            // Parse conditions
+            for (tinyxml2::XMLElement* conditionElement = levelElement->FirstChildElement("conditions")->FirstChildElement("condition"); conditionElement != nullptr; conditionElement = conditionElement->NextSiblingElement("condition")) {
+                Condition condition;
+                condition.condition_value = conditionElement->IntText();
+                level.conditions.push_back(condition);
+            }
+
+            stage.levels.push_back(level);
+        }
+
+        stages.push_back(stage);
     }
 
-    tinyxml2::XMLElement* levelElement = levelsElement->FirstChildElement("level");
-    while (levelElement) {
-        int level_number = levelElement->FirstChildElement("level_number")->IntText();
-        int xp_required = levelElement->FirstChildElement("xp_required")->IntText();
-        const char* reward = levelElement->FirstChildElement("reward")->GetText();
-
-        std::cout << "Level: " << level_number
-                  << ", XP Required: " << xp_required
-                  << ", Reward: " << (reward ? reward : "Unknown") << std::endl;
-
-        // Here you can check if the player qualifies for the next level
-        levelElement = levelElement->NextSiblingElement("level");
-    }
-
-    return true;
+    return stages;
 }
 
 bool load_npcs(Player& player) {
@@ -230,43 +292,24 @@ bool load_npcs(Player& player) {
     return true;
 }
 
+void printStages(const std::vector<Stage>& stages) {
+    for (const auto& stage : stages) {
+        std::cout << "Stage: " << stage.name << std::endl;
+        for (const auto& level : stage.levels) {
+            std::cout << "  Level: " << level.name << std::endl;
+            for (const auto& enemy : level.enemies) {
+                std::cout << "  Type: " << enemy.type << std::endl;
+            }
+        }
+    }
+}
+
 void game_menu(Player& player) {
     int choice = 0;
 
-    /* Load Weapons */
-    bool success = load_weapons(player);
-    if (success) {
-        std::cout << "\nWeapons loaded successfully!\n";
-    } else {
-        std::cout << "\nFailed to load weapons from XML file.\n";
-    }
 
-    // Load buffs
-    success = load_buffs(player);
-    if (success) {
-        std::cout << "\nBuffs loaded successfully!\n";
-    } else {
-        std::cout << "\nFailed to load buffs from XML file.\n";
-    }
-
-
-    // Load NPCs
-    success = load_npcs(player);
-    if (success) {
-        std::cout << "\nNPCs loaded successfully!\n";
-    } else {
-        std::cout << "\nFailed to load NPCs from XML file.\n";
-    }
-
-
-
-    // Load levels
-    success = load_levels(player);
-    if (success) {
-        std::cout << "\nLevels loaded successfully!\n";
-    } else {
-        std::cout << "\nFailed to load levels from XML file.\n";
-    }
+    const std::string xmlFilePath = "./data/levels.xml";
+    std::vector<Stage> stages = loadStagesFromXML(xmlFilePath);
 
     do {
         player.display_stats();
