@@ -6,7 +6,7 @@
 #include <ctime>
 #include <conio.h>
 #include "tinyxml2.h"
-
+#include <ctime>
 
 class Player;
 
@@ -83,17 +83,17 @@ public:
     void upgrade_ship() {
         maxHealth += 25;
         currentHealth += 25;
-        std::cout << "Ship upgraded! New health: " << currentHealth << "/" << maxHealth << "\n";
+        std::cout << "\n\nShip upgraded! New health: " << currentHealth << "/" << maxHealth << "\n";
     }
 
     void repair_ship() {
         currentHealth = maxHealth;
-        std::cout << "Ship fully repaired!\n";
+        std::cout << "\n\nShip fully repaired!\n";
     }
 
     void equip_weapon(int weapon_damage) {
         damage += weapon_damage;
-        std::cout << "New weapon equipped! Damage: " << damage << "\n";
+        std::cout << "\n\nNew weapon equipped! Damage: " << damage << "\n";
     }
 
     void show_info() {
@@ -149,7 +149,7 @@ public:
 };
 
 void waitForKeypress() {
-    std::cout << "Press any button to continue...";
+    std::cout << "\nPress any button to continue...";
     _getch();
 }
 class Player {
@@ -443,7 +443,21 @@ void main_menu() {
 }
 
 void clearScreen() {
-    system("cls");
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
+
+void loadingEffect(int durationInSeconds, const std::string& message) {
+    std::cout << message;
+    for (int i = 0; i < durationInSeconds; ++i) {
+        std::cout << ".";
+        std::cout.flush();
+        clock_t end_time = clock() + CLOCKS_PER_SEC;
+        while (clock() < end_time) {}
+    }
 }
 
 void ship_menu(Player& player) {
@@ -461,61 +475,67 @@ void ship_menu(Player& player) {
         std::cout << "\nChoose an option: ";
         std::cin >> choice;
         clearScreen();
-
         switch (choice) {
             case 1:
-                clearScreen();
-                std::cout << "Displaying ship information...\n";
+                std::cout << "Displaying ship information...\n\n";
                 player.ship->show_info();
+                std::cout << "\n";
                 waitForKeypress();
+                clearScreen();
                 break;
             case 2: {
-                clearScreen();
-                std::string answer;
                 std::cout << "Would you like to upgrade your ship? (150 gold) [Y/N]: ";
+                std::string answer;
                 std::cin >> answer;
+
                 if (answer == "Y" || answer == "y") {
                     if (player.gold >= upgradeCost) {
-                        player.ship->upgrade_ship();
                         player.gold -= upgradeCost;
-                        std::cout << "Ship upgraded! Remaining gold: " << player.gold << "\n";
+                        loadingEffect(5,"\nUpgrading your ship");
+                        player.ship->upgrade_ship();
+                        std::cout << "Remaining gold: " << player.gold << "\n";
                     } else {
-                        std::cout << "You don't have enough gold (150 required).\n";
+                        std::cout << "\nYou don't have enough gold (150 required).\n";
                     }
                 }
+                waitForKeypress();
+                clearScreen();
                 break;
             }
 
             case 3: {
-                clearScreen();
                 std::string answer;
                 std::cout << "Would you like to repair your ship? (100 gold) [Y/N]: ";
                 std::cin >> answer;
                 if (answer == "Y" || answer == "y") {
                     if (player.gold >= repairCost) {
-                        player.ship->repair_ship();
                         player.gold -= repairCost;
-                        std::cout << "Ship repaired! Remaining gold: " << player.gold << "\n";
+                        loadingEffect(5,"\nRepairing your ship");
+                        player.ship->repair_ship();
+                        std::cout << "Remaining gold: " << player.gold << "\n";
                     } else {
-                        std::cout << "You don't have enough gold (100 required).\n";
+                        std::cout << "\nYou don't have enough gold (100 required).\n";
                     }
                 }
+                waitForKeypress();
+                clearScreen();
                 break;
             }
 
             case 4:
-                clearScreen();
                 std::cout << "Displaying your current weapons...\n";
+                waitForKeypress();
+                clearScreen();
                 break;
 
             case 5:
-                clearScreen();
                 std::cout << "Exiting...\n";
+                clearScreen();
                 break;
 
             default:
-                clearScreen();
                 std::cout << "Invalid choice, please try again.\n";
+                clearScreen();
                 break;
         }
     } while (choice != 5);
