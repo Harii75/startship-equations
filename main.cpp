@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <conio.h>
 #include "tinyxml2.h"
 
 
@@ -147,6 +148,10 @@ public:
     }
 };
 
+void waitForKeypress() {
+    std::cout << "Press any button to continue...";
+    _getch();
+}
 class Player {
 public:
     std::string name;
@@ -437,6 +442,86 @@ void main_menu() {
     } while (choice != 3);
 }
 
+void clearScreen() {
+    system("cls");
+}
+
+void ship_menu(Player& player) {
+    int upgradeCost = 150;
+    int repairCost = 100;
+    int choice = 0;
+
+    do {
+        std::cout << "\nShip Menu:\n";
+        std::cout << "1. Ship information \n";
+        std::cout << "2. Upgrade ship\n";
+        std::cout << "3. Repair ship\n";
+        std::cout << "4. Equip weapon\n";
+        std::cout << "5. Exit ship menu\n";
+        std::cout << "\nChoose an option: ";
+        std::cin >> choice;
+        clearScreen();
+
+        switch (choice) {
+            case 1:
+                clearScreen();
+                std::cout << "Displaying ship information...\n";
+                player.ship->show_info();
+                waitForKeypress();
+                break;
+            case 2: {
+                clearScreen();
+                std::string answer;
+                std::cout << "Would you like to upgrade your ship? (150 gold) [Y/N]: ";
+                std::cin >> answer;
+                if (answer == "Y" || answer == "y") {
+                    if (player.gold >= upgradeCost) {
+                        player.ship->upgrade_ship();
+                        player.gold -= upgradeCost;
+                        std::cout << "Ship upgraded! Remaining gold: " << player.gold << "\n";
+                    } else {
+                        std::cout << "You don't have enough gold (150 required).\n";
+                    }
+                }
+                break;
+            }
+
+            case 3: {
+                clearScreen();
+                std::string answer;
+                std::cout << "Would you like to repair your ship? (100 gold) [Y/N]: ";
+                std::cin >> answer;
+                if (answer == "Y" || answer == "y") {
+                    if (player.gold >= repairCost) {
+                        player.ship->repair_ship();
+                        player.gold -= repairCost;
+                        std::cout << "Ship repaired! Remaining gold: " << player.gold << "\n";
+                    } else {
+                        std::cout << "You don't have enough gold (100 required).\n";
+                    }
+                }
+                break;
+            }
+
+            case 4:
+                clearScreen();
+                std::cout << "Displaying your current weapons...\n";
+                break;
+
+            case 5:
+                clearScreen();
+                std::cout << "Exiting...\n";
+                break;
+
+            default:
+                clearScreen();
+                std::cout << "Invalid choice, please try again.\n";
+                break;
+        }
+    } while (choice != 5);
+}
+
+
 void game_menu(Player& player) {
     int choice = 0;
 
@@ -460,13 +545,14 @@ void game_menu(Player& player) {
 
         switch (choice) {
             case 1:
-                std::cout << "The mission continues...\n";
+                std::cout<< "The mission continues...\n";
                 break;
             case 2:
                 std::cout << "Exploring the unknown..\n";
             case 3:
-                std::cout << "Displaying ship info...\n";
-                player.ship->show_info();
+                std::cout << "Displaying ship menu...\n";
+                clearScreen();
+                ship_menu(player);
                 break;
             case 4:
                 std::cout << "Displaying inventory...\n";
