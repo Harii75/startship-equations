@@ -7,6 +7,8 @@
 #include <conio.h>
 #include "tinyxml2.h"
 #include <ctime>
+#include <random>
+#include <chrono>
 
 class Player;
 
@@ -108,12 +110,11 @@ class InventoryManager {
 public:
     std::vector<std::pair<std::string, std::string>> items;
 
-    InventoryManager() {
-    }
+    InventoryManager() {}
 
     void add_item(const std::string& item, const std::string& type) {
         items.emplace_back(item, type);
-        std::cout << item << " added to inventory.\n";
+        std::cout << item << " (" << type << ") added to inventory.\n";
     }
 
     void show_inventory() {
@@ -122,11 +123,11 @@ public:
             std::cout << "Your inventory is empty.\n";
         } else {
             for (const auto& item : items) {
-                std::cout << "-" << item.first << " (" << item.second << ")\n";
+                std::cout << "- " << item.first << " (" << item.second << ")\n";
             }
         }
     }
-    //Pályátol függő ez majd javitandó
+
     bool can_trade() {
         return !items.empty();
     }
@@ -144,6 +145,22 @@ public:
             items.erase(it, items.end());
         } else {
             std::cout << item << " cannot be found in inventory.\n";
+        }
+    }
+
+    void add_random_items(const std::vector<Weapon>& weapons, int count = 2) {
+        // Seed the generator with the current time
+        std::mt19937 gen(static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count()));
+
+        int itemsToAdd = std::min(count, static_cast<int>(weapons.size()));
+
+        std::vector<int> indices(weapons.size());
+        std::iota(indices.begin(), indices.end(), 0);
+        std::shuffle(indices.begin(), indices.end(), gen);
+
+        for (int i = 0; i < itemsToAdd; ++i) {
+            const Weapon& weapon = weapons[indices[i]];
+            add_item(weapon.name, weapon.rarity);
         }
     }
 };
@@ -171,8 +188,9 @@ public:
         std::cout << "######################################################\n";
         std::cout << "                 Captain: " << name << "             \n";
         std::cout << "   Gold: " << gold << "\t\t\tLevel: " << level << "   XP: " << xp << "/240  \n";
-        std::cout << "   Dagamge: " << ship->damage <<  "\t\t\tHealth: " << ship->currentHealth <<"/" << ship->maxHealth << "\n";
+        std::cout << "   Damage: " << ship->damage <<  "\t\t\tHealth: " << ship->currentHealth <<"/" << ship->maxHealth << "\n";
         std::cout << "   Stage: [ x - y ]\t\tKnowledge: " << knowledge << " \n";
+        std::cout << "                    Score: " << "0" << " \n";
         std::cout << "######################################################\n";
     }
 
@@ -199,7 +217,6 @@ std::vector<Weapon> loadWeaponsFromXML(const std::string& filePath) {
         return weapons; // Return empty vector if no weapons element is found
     }
 
-    // Iterate through each <weapon> element
     for (tinyxml2::XMLElement* weaponElement = weaponsElement->FirstChildElement("weapon");
          weaponElement != nullptr; weaponElement = weaponElement->NextSiblingElement("weapon")) {
 
@@ -405,6 +422,24 @@ void printNpcs(const std::vector<NPC>& npcs) {
     }
 }
 
+void clearScreen() {
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
+
+void loadingEffect(int durationInSeconds, const std::string& message) {
+    std::cout << message;
+    for (int i = 0; i < durationInSeconds; ++i) {
+        std::cout << ".";
+        std::cout.flush();
+        clock_t end_time = clock() + CLOCKS_PER_SEC;
+        while (clock() < end_time) {}
+    }
+}
+
 void main_menu() {
     int choice = 0;
     do {
@@ -440,24 +475,6 @@ void main_menu() {
                 break;
         }
     } while (choice != 3);
-}
-
-void clearScreen() {
-    #ifdef _WIN32
-        system("cls");
-    #else
-        system("clear");
-    #endif
-}
-
-void loadingEffect(int durationInSeconds, const std::string& message) {
-    std::cout << message;
-    for (int i = 0; i < durationInSeconds; ++i) {
-        std::cout << ".";
-        std::cout.flush();
-        clock_t end_time = clock() + CLOCKS_PER_SEC;
-        while (clock() < end_time) {}
-    }
 }
 
 void ship_menu(Player& player) {
@@ -541,7 +558,6 @@ void ship_menu(Player& player) {
     } while (choice != 5);
 }
 
-
 void game_menu(Player& player) {
     int choice = 0;
 
@@ -549,6 +565,7 @@ void game_menu(Player& player) {
     std::vector<Stage> stages = loadStagesFromXML("data/levels.xml");
     std::vector<Buff> buffs = loadBuffsFromXML("data/buffs.xml");
     std::vector<NPC> npcs = loadNpcsFromXML("data/npc.xml");
+    player.inventory->add_random_items(weapons);
 
     do {
         player.display_stats();
@@ -556,7 +573,7 @@ void game_menu(Player& player) {
         std::cout << "\nGame Menu:\n";
         std::cout << "1. Continue Quest\n";
         std::cout << "2. Explore\n";
-        std::cout << "3. Ship Info\n";
+        std::cout << "3. Ship\n";
         std::cout << "4. Inventory\n";
         std::cout << "5. Trade\n";
         std::cout << "6. Exit\n";
