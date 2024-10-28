@@ -8,7 +8,9 @@
 
 
 class Player;
+
 void main_menu();
+
 void game_menu(Player& player);
 
 class Enemy {
@@ -67,9 +69,6 @@ public:
     std::string description;
     std::vector<Level> levels;
 };
-
-
-
 
 class ShipManager {
 public:
@@ -179,38 +178,6 @@ public:
         delete inventory;
     }
 };
-
-void main_menu() {
-    int choice = 0;
-    do {
-        std::cout << "\nMain Menu:\n";
-        std::cout << "1. New Game\n";
-        std::cout << "2. Leaderboard\n";
-        std::cout << "3. Exit\n";
-        std::cout << "\nChoose an option: ";
-        std::cin >> choice;
-
-        switch (choice) {
-            case 1: {
-                std::string player_name;
-                std::cout << "\nEnter your name: ";
-                std::cin >> player_name;
-                Player player(player_name);
-                game_menu(player);
-                break;
-            }
-            case 2:
-                std::cout << "Not available. Check Later\n";
-                break;
-            case 3:
-                std::cout << "Exit...\n";
-                break;
-            default:
-                std::cout << "Invalid input, try again.\n";
-                break;
-        }
-    } while (choice != 3);
-}
 
 std::vector<Weapon> loadWeaponsFromXML(const std::string& filePath) {
     std::vector<Weapon> weapons;
@@ -433,6 +400,43 @@ void printNpcs(const std::vector<NPC>& npcs) {
     }
 }
 
+void main_menu() {
+    int choice = 0;
+    do {
+        std::cout << "\nMain Menu:\n";
+        std::cout << "1. New Game\n";
+        std::cout << "2. Leaderboard\n";
+        std::cout << "3. Exit\n";
+        std::cout << "\nChoose an option: ";
+        std::cin >> choice;
+
+        switch (choice) {
+            case 1: {
+                std::string player_name;
+                std::cout << "\nEnter your name: ";
+                std::cin >> player_name;
+                while (player_name.length() > 20){
+                    std::cout << "\nName must be less than 20 characters. ";
+                    std::cout << "\nEnter your name: ";
+                    std::cin >> player_name;
+                }
+                Player player(player_name);
+                game_menu(player);
+                break;
+            }
+            case 2:
+                std::cout << "Not available. Check Later\n";
+                break;
+            case 3:
+                std::cout << "Exit...\n";
+                break;
+            default:
+                std::cout << "Invalid input, try again.\n";
+                break;
+        }
+    } while (choice != 3);
+}
+
 void game_menu(Player& player) {
     int choice = 0;
 
@@ -446,10 +450,10 @@ void game_menu(Player& player) {
 
         std::cout << "\nGame Menu:\n";
         std::cout << "1. Continue Quest\n";
-        std::cout << "2. Ship Info\n";
-        std::cout << "3. Inventory\n";
-        std::cout << "4. Trade\n";
-        std::cout << "5. Explore\n";
+        std::cout << "2. Explore\n";
+        std::cout << "3. Ship Info\n";
+        std::cout << "4. Inventory\n";
+        std::cout << "5. Trade\n";
         std::cout << "6. Exit\n";
         std::cout << "\nChoose an option: ";
         std::cin >> choice;
@@ -459,39 +463,18 @@ void game_menu(Player& player) {
                 std::cout << "The mission continues...\n";
                 break;
             case 2:
+                std::cout << "Exploring the unknown..\n";
+            case 3:
                 std::cout << "Displaying ship info...\n";
                 player.ship->show_info();
                 break;
-            case 3:
+            case 4:
                 std::cout << "Displaying inventory...\n";
                 player.inventory->show_inventory();
                 break;
-            case 4:
-                if (player.inventory->can_trade()) {
-                    std::string item;
-                    std::cout << "What would you like to sell? ";
-                    std::cin >> item;
-                    player.inventory->sell_item(item);
-                } else {
-                    std::cout << "You have no items to sell.\n";
-                }
-                break;
             case 5:
-            {
-                int random_event = rand() % 3;
-                switch (random_event) {
-                    case 0:
-                        std::cout << "You found a treasure chest!\n";
-                        break;
-                    case 1:
-                        std::cout << "You found some resources!\n";
-                        break;
-                    case 2:
-                        std::cout << "You encountered a mysterious object!\n";
-                        break;
-                }
+                std::cout << "You're not in a trading area.";
                 break;
-            }
             case 6:
                 std::cout << "Exiting...\n";
                 break;
