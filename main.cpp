@@ -9,6 +9,8 @@
 #include <ctime>
 #include <random>
 #include <chrono>
+#include <memory>
+#include <thread>
 
 class Player;
 
@@ -185,7 +187,7 @@ public:
     }
 
     void display_stats() {
-        std::cout << "######################################################\n";
+        std::cout << "\n######################################################\n";
         std::cout << "                 Captain: " << name << "             \n";
         std::cout << "   Gold: " << gold << "\t\t\tLevel: " << level << "   XP: " << xp << "/240  \n";
         std::cout << "   Damage: " << ship->damage <<  "\t\t\tHealth: " << ship->currentHealth <<"/" << ship->maxHealth << "\n";
@@ -440,6 +442,44 @@ void loadingEffect(int durationInSeconds, const std::string& message) {
     }
 }
 
+void equationChallenge() {
+    int num1 = rand() % 10 + 1;
+    int num2 = rand() % 10 + 1;
+    int correctAnswer = num1 + num2;
+
+    std::cout << "You have 5 seconds to answer this equation: " << num1 << " + " << num2 << " = ?" << std::endl;
+
+    auto start = std::chrono::steady_clock::now();
+    std::string answer;
+    bool answeredInTime = false;
+
+    // Give the user 5 seconds to answer
+    while (std::chrono::steady_clock::now() - start < std::chrono::seconds(5)) {
+        if (_kbhit()) {
+            char ch = _getch();
+            if (ch == '\r') break;  // Enter key
+            answer += ch;
+            answeredInTime = true;
+        }
+    }
+
+    if (!answeredInTime) {
+        std::cout << "\nTime's up! Now you can enter your answer: ";
+        std::cin >> answer;
+    }
+
+    if (answer.empty()) {
+        std::cout << "You're stupid.\n";
+    } else {
+        int userAnswer = std::stoi(answer);
+        if (userAnswer == correctAnswer) {
+            std::cout << "Correct! You were accurate.\n";
+        } else {
+            std::cout << "Incorrect. The correct answer was " << correctAnswer << ".\n";
+        }
+    }
+}
+
 void main_menu() {
     int choice = 0;
     do {
@@ -540,9 +580,6 @@ void ship_menu(Player& player) {
             }
 
             case 4:
-                std::cout << "Displaying your current weapons...\n";
-                waitForKeypress();
-                clearScreen();
                 break;
 
             case 5:
@@ -558,6 +595,74 @@ void ship_menu(Player& player) {
     } while (choice != 5);
 }
 
+void randomScenario(Player& player) {
+    std::srand(static_cast<unsigned int>(std::time(0)));
+
+    int scenario = std::rand() % 5 + 1;
+
+    switch (scenario) {
+        case 1:
+            std::cout << "Nothing happens as you drift through space.\n";
+            break;
+
+        case 2: {
+            int freeGold = std::rand() % 101;
+            player.gold += freeGold;
+            std::cout << "You found a floating cabinet and collected " << freeGold << " gold!\n";
+            break;
+        }
+
+        case 3:
+            std::cout << "An asteroid collision! Solve these equations to stabilize your ship:\n";
+            equationChallenge();
+            break;
+
+        case 4:
+            std::cout << "You encounter an enemy ship! (Fight scenario skipped for now)\n";
+            player.knowledge += 5;
+            break;
+
+        case 5:
+            std::cout << "You meet a mysterious NPC! (NPC Interaction skipped for now)\n";
+            player.knowledge += 5;
+            break;
+
+        default:
+            std::cout << "An unexpected event occurs in space.\n";
+            break;
+    }
+}
+
+void game_progression(Player& player, const std::vector<Stage>& stages) {
+    for (const auto& stage : stages) {
+        std::cout << "\nEntering Stage: " << stage.name << "\n" << stage.description << "\n";
+
+        for (const auto& level : stage.levels) {
+            std::cout << "\nNow in Level: " << level.name << " (" << level.difficulty << ")\n";
+
+            for (const auto& enemy : level.enemies) {
+                std::cout << "Encountered Enemy: " << enemy.type << " - Health: " << enemy.health << ", Damage: " << enemy.damage << "\n";
+            }
+
+            std::cout << "Player fights through the level...\n";
+            waitForKeypress();
+
+            // Apply rewards at the end of the level
+            player.gold += level.rewards.gold;
+            player.xp += level.rewards.xp;
+            std::cout << "\nLevel Completed!\n";
+            std::cout << "Rewards: " << level.rewards.gold << " gold, " << level.rewards.xp << " XP\n";
+
+            waitForKeypress();
+        }
+
+        std::cout << "Stage " << stage.name << " completed!\n";
+        waitForKeypress();
+    }
+
+    std::cout << "Congratulations! You've completed all stages!\n";
+}
+
 void game_menu(Player& player) {
     int choice = 0;
 
@@ -568,8 +673,8 @@ void game_menu(Player& player) {
     player.inventory->add_random_items(weapons);
 
     do {
+        clearScreen();
         player.display_stats();
-
         std::cout << "\nGame Menu:\n";
         std::cout << "1. Continue Quest\n";
         std::cout << "2. Explore\n";
@@ -582,21 +687,32 @@ void game_menu(Player& player) {
 
         switch (choice) {
             case 1:
+                clearScreen();
                 std::cout<< "The mission continues...\n";
+                game_progression(player,stages);
+                waitForKeypress();
                 break;
             case 2:
+                clearScreen();
                 std::cout << "Exploring the unknown..\n";
+                randomScenario(player);
+                waitForKeypress();
+                break;
             case 3:
                 std::cout << "Displaying ship menu...\n";
                 clearScreen();
                 ship_menu(player);
                 break;
             case 4:
+                clearScreen();
                 std::cout << "Displaying inventory...\n";
                 player.inventory->show_inventory();
+                waitForKeypress();
                 break;
             case 5:
+                clearScreen();
                 std::cout << "You're not in a trading area.";
+                waitForKeypress();
                 break;
             case 6:
                 std::cout << "Exiting...\n";
