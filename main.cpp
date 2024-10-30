@@ -67,6 +67,8 @@ public:
     std::vector<Condition> conditions;
 };
 
+
+
 class Stage {
 public:
     int id;
@@ -171,6 +173,7 @@ void waitForKeypress() {
     std::cout << "\nPress any button to continue...";
     _getch();
 }
+
 class Player {
 public:
     std::string name;
@@ -199,13 +202,73 @@ public:
         std::cout << "######################################################\n";
     }
 
-    //Levelup function kellene
+    int calculateDamage(int correctAnswer, int playerAnswer) {
+        int difference = std::abs(correctAnswer - playerAnswer);
+        if (difference == 0) {
+            return ship->damage * 2;
+        } else if (difference <= 2) {
+            return ship->damage;
+        } else if (difference <= 5) {
+            return ship->damage / 2;
+        } else {
+            return 0;
+        }
+    }
 
+    void gainXP(int points) {
+        xp += points;
+        std::cout << "You gained " << points << " XP!" << std::endl;
+    }
     ~Player() {
         delete ship;
         delete inventory;
     }
 };
+
+std::vector<NPC> loadNpcsFromXML(const std::string& filePath) {
+    std::vector<NPC> npcs;
+    tinyxml2::XMLDocument doc;
+
+    if (doc.LoadFile(filePath.c_str()) != tinyxml2::XML_SUCCESS) {
+        std::cerr << "Error loading XML file: " << doc.ErrorIDToName(doc.ErrorID()) << std::endl;
+        return npcs; // Return empty vector on failure
+    }
+
+    tinyxml2::XMLElement* npcsElement = doc.FirstChildElement("npcs");
+    if (!npcsElement) {
+        std::cerr << "No <npcs> element found in the XML file." << std::endl;
+        return npcs; // Return empty vector if no npcs element is found
+    }
+
+    // Iterate through each <npc> element
+    for (tinyxml2::XMLElement* npcElement = npcsElement->FirstChildElement("npc");
+         npcElement != nullptr; npcElement = npcElement->NextSiblingElement("npc")) {
+
+        NPC npc;
+
+        npcElement->FirstChildElement("id")->QueryIntText(&npc.id);
+        npcElement->FirstChildElement("stage")->QueryIntText(&npc.stage);
+
+        const char* name = npcElement->FirstChildElement("name")->GetText();
+        if (name) {
+            npc.name = name;
+        }
+
+        const char* quest = npcElement->FirstChildElement("Quest")->GetText();
+        if (quest) {
+            npc.quest = quest;
+        }
+
+        const char* reward = npcElement->FirstChildElement("Reward")->GetText();
+        if (reward) {
+            npc.reward = reward;
+        }
+
+        npcs.push_back(npc);
+    }
+
+    return npcs; // Return the vector of NPCs
+}
 
 std::vector<Weapon> loadWeaponsFromXML(const std::string& filePath) {
     std::vector<Weapon> weapons;
@@ -309,12 +372,38 @@ std::vector<Stage> loadStagesFromXML(const std::string& filePath) {
             level.difficulty = levelElement->FirstChildElement("difficulty")->GetText();
 
             // Parse enemies
-            for (tinyxml2::XMLElement* enemyElement = levelElement->FirstChildElement("enemies")->FirstChildElement("enemy"); enemyElement != nullptr; enemyElement = enemyElement->NextSiblingElement("enemy")) {
-                Enemy enemy;
-                enemy.type = enemyElement->FirstChildElement("type")->GetText();
-                enemy.health = enemyElement->IntAttribute("health");
-                enemy.damage = enemyElement->IntAttribute("damage");
-                level.enemies.push_back(enemy);
+            tinyxml2::XMLElement* enemiesElement = levelElement->FirstChildElement("enemies");
+            if (enemiesElement) {
+                for (tinyxml2::XMLElement* enemyElement = enemiesElement->FirstChildElement("enemy"); enemyElement != nullptr; enemyElement = enemyElement->NextSiblingElement("enemy")) {
+                    Enemy enemy;
+
+                    // Retrieve type
+                    const char* typeText = enemyElement->FirstChildElement("type")->GetText();
+                    enemy.type = typeText ? typeText : "Unknown"; // Default if not found
+
+                    // Retrieve health
+                    tinyxml2::XMLElement* healthElement = enemyElement->FirstChildElement("health");
+                    if (healthElement) {
+                        enemy.health = healthElement->IntText();
+                    } else {
+                        enemy.health = -1; // Default if not found
+                        std::cerr << "Warning: Health not found for enemy type: " << enemy.type << std::endl;
+                    }
+
+                    // Retrieve damage
+                    tinyxml2::XMLElement* damageElement = enemyElement->FirstChildElement("damage");
+                    if (damageElement) {
+                        enemy.damage = damageElement->IntText();
+                    } else {
+                        enemy.damage = -1; // Default if not found
+                        std::cerr << "Warning: Damage not found for enemy type: " << enemy.type << std::endl;
+                    }
+
+                    // Add enemy to level
+                    level.enemies.push_back(enemy);
+                }
+            } else {
+                std::cerr << "Warning: No enemies found in level: " << level.name << std::endl;
             }
 
             // Parse rewards
@@ -340,50 +429,6 @@ std::vector<Stage> loadStagesFromXML(const std::string& filePath) {
     return stages;
 }
 
-std::vector<NPC> loadNpcsFromXML(const std::string& filePath) {
-    std::vector<NPC> npcs;
-    tinyxml2::XMLDocument doc;
-
-    if (doc.LoadFile(filePath.c_str()) != tinyxml2::XML_SUCCESS) {
-        std::cerr << "Error loading XML file: " << doc.ErrorIDToName(doc.ErrorID()) << std::endl;
-        return npcs; // Return empty vector on failure
-    }
-
-    tinyxml2::XMLElement* npcsElement = doc.FirstChildElement("npcs");
-    if (!npcsElement) {
-        std::cerr << "No <npcs> element found in the XML file." << std::endl;
-        return npcs; // Return empty vector if no npcs element is found
-    }
-
-    // Iterate through each <npc> element
-    for (tinyxml2::XMLElement* npcElement = npcsElement->FirstChildElement("npc");
-         npcElement != nullptr; npcElement = npcElement->NextSiblingElement("npc")) {
-
-        NPC npc;
-
-        npcElement->FirstChildElement("id")->QueryIntText(&npc.id);
-        npcElement->FirstChildElement("stage")->QueryIntText(&npc.stage);
-
-        const char* name = npcElement->FirstChildElement("name")->GetText();
-        if (name) {
-            npc.name = name;
-        }
-
-        const char* quest = npcElement->FirstChildElement("Quest")->GetText();
-        if (quest) {
-            npc.quest = quest;
-        }
-
-        const char* reward = npcElement->FirstChildElement("Reward")->GetText();
-        if (reward) {
-            npc.reward = reward;
-        }
-
-        npcs.push_back(npc);
-    }
-
-    return npcs; // Return the vector of NPCs
-}
 
 void printStages(const std::vector<Stage>& stages) {
     for (const auto& stage : stages) {
@@ -392,6 +437,8 @@ void printStages(const std::vector<Stage>& stages) {
             std::cout << "  Level: " << level.name << std::endl;
             for (const auto& enemy : level.enemies) {
                 std::cout << "  Type: " << enemy.type << std::endl;
+                std::cout << "  Health: " << enemy.health << std::endl;
+                std::cout << "  Damage: " << enemy.damage << std::endl;
             }
         }
     }
@@ -643,6 +690,58 @@ void randomScenario(Player& player) {
     }
 }
 
+void generateEquation(int &num1, int &num2, char &operation, int &correctAnswer) {
+    num1 = rand() % 20 + 1;
+    num2 = rand() % 20 + 1;
+    int op = rand() % 2;  // 0 for addition, 1 for subtraction
+
+    if (op == 0) {
+        operation = '+';
+        correctAnswer = num1 + num2;
+    } else {
+        operation = '-';
+        correctAnswer = num1 - num2;
+    }
+}
+
+void fight(Player &player, Enemy &enemy) {  // Change to Enemy&
+    while (player.ship->currentHealth > 0 && enemy.health > 0) {
+        int num1, num2, playerAnswer, correctAnswer;
+        char operation;
+
+        generateEquation(num1, num2, operation, correctAnswer);
+
+        // Display equation and get player's answer
+        std::cout << "Solve this equation to attack: " << num1 << " " << operation << " " << num2 << " = ";
+        std::cin >> playerAnswer;
+
+        // Calculate damage based on accuracy
+        int inflictedDamage = player.calculateDamage(correctAnswer, playerAnswer);
+        enemy.health -= inflictedDamage;  // Now valid since enemy is not const
+        std::cout << "You dealt " << inflictedDamage << " damage to the enemy!" << std::endl;
+
+        // Enemy's turn to attack
+        if (enemy.health > 0) {
+            int enemyDamage = rand() % 10 + 5;  // Random enemy damage
+            player.ship->currentHealth -= enemyDamage;
+            std::cout << "The enemy dealt " << enemyDamage << " damage to you!" << std::endl;
+        }
+
+        // Display health status
+        std::cout << "Your health: " << player.ship->currentHealth << std::endl;
+        std::cout << "Enemy health: " << enemy.health << std::endl;
+        std::cout << "-----------------------------" << std::endl;
+    }
+
+    // Determine result of the fight
+    if (player.ship->currentHealth > 0) {
+        std::cout << "You defeated the enemy!" << std::endl;
+        player.gainXP(50);  // Award XP for winning
+    } else {
+        std::cout << "You were defeated by the enemy..." << std::endl;
+    }
+}
+
 void game_progression(Player& player, const std::vector<Stage>& stages, size_t& currentStage, size_t& currentLevel) {
     // Check if the current stage is within bounds
     if (player.currentStage >= stages.size()) {
@@ -653,16 +752,21 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
     // Loop through stages starting from currentStage
     for (size_t stageIndex = player.currentStage; stageIndex < stages.size(); ++stageIndex) {
         const auto& stage = stages[stageIndex];
-        std::cout << "\nEntering Stage: " << stage.name << "\n" << stage.description << "\n";
 
         // Loop through levels starting from currentLevel for the current stage
         for (size_t levelIndex = player.currentLevel; levelIndex < stage.levels.size(); ++levelIndex) {
             const auto& level = stage.levels[levelIndex];
             std::cout << "\nNow in Level: " << level.name << " (" << level.difficulty << ")\n";
 
-            for (const auto& enemy : level.enemies) {
+
+            for (const Enemy& enemy : level.enemies) {
                 std::cout << "Encountered Enemy: " << enemy.type << " - Health: " << enemy.health << ", Damage: " << enemy.damage << "\n";
+
+                // Copy the enemy for the fight function if you need to modify it
+                Enemy enemyCopy = enemy; // Create a copy for the fight
+                fight(player, enemyCopy);
             }
+
 
             std::cout << "Player fights through the level...\n";
             waitForKeypress();
@@ -697,6 +801,7 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
     std::cout << "Congratulations! You've completed all stages!\n";
 }
 
+
 void game_menu(Player& player) {
     int choice = 0;
 
@@ -704,8 +809,10 @@ void game_menu(Player& player) {
     std::vector<Stage> stages = loadStagesFromXML("data/levels.xml");
     std::vector<Buff> buffs = loadBuffsFromXML("data/buffs.xml");
     std::vector<NPC> npcs = loadNpcsFromXML("data/npc.xml");
+
     player.inventory->add_random_items(weapons);
 
+    waitForKeypress();
     do {
         clearScreen();
         player.display_stats();
