@@ -180,6 +180,9 @@ public:
     int knowledge;
     ShipManager* ship;
     InventoryManager* inventory;
+    size_t currentStage = 0;
+    size_t currentLevel = 0;
+    int highscore = 0;
 
     Player(const std::string& name) : name(name), gold(500), level(1), xp(0), knowledge(0) {
         ship = new ShipManager();
@@ -191,8 +194,8 @@ public:
         std::cout << "                 Captain: " << name << "             \n";
         std::cout << "   Gold: " << gold << "\t\t\tLevel: " << level << "   XP: " << xp << "/240  \n";
         std::cout << "   Damage: " << ship->damage <<  "\t\t\tHealth: " << ship->currentHealth <<"/" << ship->maxHealth << "\n";
-        std::cout << "   Stage: [ x - y ]\t\tKnowledge: " << knowledge << " \n";
-        std::cout << "                    Score: " << "0" << " \n";
+        std::cout << "   Stage: [ " << currentStage+1 << " - " << currentLevel+1 << " ]\t\tKnowledge: " << knowledge << " \n";
+        std::cout << "                    Score: " << highscore << " \n";
         std::cout << "######################################################\n";
     }
 
@@ -481,8 +484,10 @@ void equationChallenge() {
 }
 
 void main_menu() {
+    clearScreen();
     int choice = 0;
     do {
+        clearScreen();
         std::cout << "\nMain Menu:\n";
         std::cout << "1. New Game\n";
         std::cout << "2. Leaderboard\n";
@@ -492,6 +497,7 @@ void main_menu() {
 
         switch (choice) {
             case 1: {
+                clearScreen();
                 std::string player_name;
                 std::cout << "\nEnter your name: ";
                 std::cin >> player_name;
@@ -505,12 +511,15 @@ void main_menu() {
                 break;
             }
             case 2:
+                clearScreen();
                 std::cout << "Not available. Check Later\n";
+                waitForKeypress();
                 break;
             case 3:
                 std::cout << "Exit...\n";
                 break;
             default:
+                clearScreen();
                 std::cout << "Invalid input, try again.\n";
                 break;
         }
@@ -596,6 +605,7 @@ void ship_menu(Player& player) {
 }
 
 void randomScenario(Player& player) {
+    player.knowledge += 5;
     std::srand(static_cast<unsigned int>(std::time(0)));
 
     int scenario = std::rand() % 5 + 1;
@@ -633,11 +643,21 @@ void randomScenario(Player& player) {
     }
 }
 
-void game_progression(Player& player, const std::vector<Stage>& stages) {
-    for (const auto& stage : stages) {
+void game_progression(Player& player, const std::vector<Stage>& stages, size_t& currentStage, size_t& currentLevel) {
+    // Check if the current stage is within bounds
+    if (player.currentStage >= stages.size()) {
+        std::cout << "No more stages available.\n";
+        return;
+    }
+
+    // Loop through stages starting from currentStage
+    for (size_t stageIndex = player.currentStage; stageIndex < stages.size(); ++stageIndex) {
+        const auto& stage = stages[stageIndex];
         std::cout << "\nEntering Stage: " << stage.name << "\n" << stage.description << "\n";
 
-        for (const auto& level : stage.levels) {
+        // Loop through levels starting from currentLevel for the current stage
+        for (size_t levelIndex = player.currentLevel; levelIndex < stage.levels.size(); ++levelIndex) {
+            const auto& level = stage.levels[levelIndex];
             std::cout << "\nNow in Level: " << level.name << " (" << level.difficulty << ")\n";
 
             for (const auto& enemy : level.enemies) {
@@ -647,15 +667,29 @@ void game_progression(Player& player, const std::vector<Stage>& stages) {
             std::cout << "Player fights through the level...\n";
             waitForKeypress();
 
-            // Apply rewards at the end of the level
             player.gold += level.rewards.gold;
             player.xp += level.rewards.xp;
             std::cout << "\nLevel Completed!\n";
             std::cout << "Rewards: " << level.rewards.gold << " gold, " << level.rewards.xp << " XP\n";
 
             waitForKeypress();
+
+            char choice;
+            std::cout << "\nChoose an option:\n";
+            std::cout << "1. Continue to the next level\n";
+            std::cout << "2. Return to the main menu\n";
+            std::cout << "Enter your choice: ";
+            std::cin >> choice;
+
+            if (choice == '2') {
+                player.currentStage = stageIndex;
+                player.currentLevel = levelIndex + 1;
+                std::cout << "Returning to the main menu...\n";
+                return;
+            }
         }
 
+        player.currentLevel = 0;
         std::cout << "Stage " << stage.name << " completed!\n";
         waitForKeypress();
     }
@@ -689,7 +723,7 @@ void game_menu(Player& player) {
             case 1:
                 clearScreen();
                 std::cout<< "The mission continues...\n";
-                game_progression(player,stages);
+                game_progression(player,stages,player.currentStage,player.currentLevel);
                 waitForKeypress();
                 break;
             case 2:
@@ -705,7 +739,7 @@ void game_menu(Player& player) {
                 break;
             case 4:
                 clearScreen();
-                std::cout << "Displaying inventory...\n";
+                std::cout << "Displaying inventory...\n\n";
                 player.inventory->show_inventory();
                 waitForKeypress();
                 break;
@@ -715,6 +749,7 @@ void game_menu(Player& player) {
                 waitForKeypress();
                 break;
             case 6:
+                clearScreen();
                 std::cout << "Exiting...\n";
                 break;
             default:
