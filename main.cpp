@@ -31,12 +31,6 @@ struct Weapon {
     std::string rarity;
 };
 
-struct Buff {
-    int id;
-    std::string name;
-    int duration;
-    std::string effect;
-};
 
 struct NPC {
     int id;
@@ -66,8 +60,6 @@ public:
     Reward rewards;
     std::vector<Condition> conditions;
 };
-
-
 
 class Stage {
 public:
@@ -186,6 +178,7 @@ public:
     size_t currentStage = 0;
     size_t currentLevel = 0;
     int highscore = 0;
+    bool canTrade;
 
     Player(const std::string& name) : name(name), gold(500), level(1), xp(0), knowledge(0) {
         ship = new ShipManager();
@@ -209,7 +202,7 @@ public:
         } else if (difference <= 2) {
             return ship->damage;
         } else if (difference <= 5) {
-            return ship->damage / 2;
+            return ship->damage / 2;+
         } else {
             return 0;
         }
@@ -219,6 +212,13 @@ public:
         xp += points;
         std::cout << "You gained " << points << " XP!" << std::endl;
     }
+
+    void canPlayerTrade(){
+        canTrade = (currentLevel % 5 == 0) ? true : false;
+        std::cout << (canTrade ? "yes" : "no") << std::endl;
+        std::cout << currentLevel;
+    }
+
     ~Player() {
         delete ship;
         delete inventory;
@@ -308,45 +308,7 @@ std::vector<Weapon> loadWeaponsFromXML(const std::string& filePath) {
     return weapons; // Return the vector of weapons
 }
 
-std::vector<Buff> loadBuffsFromXML(const std::string& filePath) {
-    std::vector<Buff> buffs;
-    tinyxml2::XMLDocument doc;
 
-    if (doc.LoadFile(filePath.c_str()) != tinyxml2::XML_SUCCESS) {
-        std::cerr << "Error loading XML file: " << doc.ErrorIDToName(doc.ErrorID()) << std::endl;
-        return buffs; // Return empty vector on failure
-    }
-
-    tinyxml2::XMLElement* buffsElement = doc.FirstChildElement("buffs");
-    if (!buffsElement) {
-        std::cerr << "No <buffs> element found in the XML file." << std::endl;
-        return buffs; // Return empty vector if no buffs element is found
-    }
-
-    // Iterate through each <buff> element
-    for (tinyxml2::XMLElement* buffElement = buffsElement->FirstChildElement("buff");
-         buffElement != nullptr; buffElement = buffElement->NextSiblingElement("buff")) {
-
-        Buff buff;
-        buffElement->FirstChildElement("id")->QueryIntText(&buff.id);
-
-        const char* name = buffElement->FirstChildElement("name")->GetText();
-        if (name) {
-            buff.name = name;
-        }
-
-        buffElement->FirstChildElement("duration")->QueryIntText(&buff.duration);
-
-        const char* effect = buffElement->FirstChildElement("effect")->GetText();
-        if (effect) {
-            buff.effect = effect;
-        }
-
-        buffs.push_back(buff);
-    }
-
-    return buffs; // Return the vector of buffs
-}
 
 std::vector<Stage> loadStagesFromXML(const std::string& filePath) {
     std::vector<Stage> stages;
@@ -429,7 +391,6 @@ std::vector<Stage> loadStagesFromXML(const std::string& filePath) {
     return stages;
 }
 
-
 void printStages(const std::vector<Stage>& stages) {
     for (const auto& stage : stages) {
         std::cout << "Stage: " << stage.name << std::endl;
@@ -441,16 +402,6 @@ void printStages(const std::vector<Stage>& stages) {
                 std::cout << "  Damage: " << enemy.damage << std::endl;
             }
         }
-    }
-}
-
-void printBuffs(const std::vector<Buff>& buffs) {
-    for (const auto& buff : buffs) {
-        std::cout << "Buff ID: " << buff.id << std::endl;
-        std::cout << "Name: " << buff.name << std::endl;
-        std::cout << "Duration: " << buff.duration << std::endl;
-        std::cout << "Effect: " << buff.effect << std::endl;
-        std::cout << "--------------------" << std::endl;
     }
 }
 
@@ -528,49 +479,6 @@ void equationChallenge() {
             std::cout << "Incorrect. The correct answer was " << correctAnswer << ".\n";
         }
     }
-}
-
-void main_menu() {
-    clearScreen();
-    int choice = 0;
-    do {
-        clearScreen();
-        std::cout << "\nMain Menu:\n";
-        std::cout << "1. New Game\n";
-        std::cout << "2. Leaderboard\n";
-        std::cout << "3. Exit\n";
-        std::cout << "\nChoose an option: ";
-        std::cin >> choice;
-
-        switch (choice) {
-            case 1: {
-                clearScreen();
-                std::string player_name;
-                std::cout << "\nEnter your name: ";
-                std::cin >> player_name;
-                while (player_name.length() > 20){
-                    std::cout << "\nName must be less than 20 characters. ";
-                    std::cout << "\nEnter your name: ";
-                    std::cin >> player_name;
-                }
-                Player player(player_name);
-                game_menu(player);
-                break;
-            }
-            case 2:
-                clearScreen();
-                std::cout << "Not available. Check Later\n";
-                waitForKeypress();
-                break;
-            case 3:
-                std::cout << "Exit...\n";
-                break;
-            default:
-                clearScreen();
-                std::cout << "Invalid input, try again.\n";
-                break;
-        }
-    } while (choice != 3);
 }
 
 void ship_menu(Player& player) {
@@ -651,45 +559,6 @@ void ship_menu(Player& player) {
     } while (choice != 5);
 }
 
-void randomScenario(Player& player) {
-    player.knowledge += 5;
-    std::srand(static_cast<unsigned int>(std::time(0)));
-
-    int scenario = std::rand() % 5 + 1;
-
-    switch (scenario) {
-        case 1:
-            std::cout << "Nothing happens as you drift through space.\n";
-            break;
-
-        case 2: {
-            int freeGold = std::rand() % 101;
-            player.gold += freeGold;
-            std::cout << "You found a floating cabinet and collected " << freeGold << " gold!\n";
-            break;
-        }
-
-        case 3:
-            std::cout << "An asteroid collision! Solve these equations to stabilize your ship:\n";
-            equationChallenge();
-            break;
-
-        case 4:
-            std::cout << "You encounter an enemy ship! (Fight scenario skipped for now)\n";
-            player.knowledge += 5;
-            break;
-
-        case 5:
-            std::cout << "You meet a mysterious NPC! (NPC Interaction skipped for now)\n";
-            player.knowledge += 5;
-            break;
-
-        default:
-            std::cout << "An unexpected event occurs in space.\n";
-            break;
-    }
-}
-
 void generateEquation(int &num1, int &num2, char &operation, int &correctAnswer) {
     num1 = rand() % 20 + 1;
     num2 = rand() % 20 + 1;
@@ -704,7 +573,7 @@ void generateEquation(int &num1, int &num2, char &operation, int &correctAnswer)
     }
 }
 
-void fight(Player &player, Enemy &enemy) {  // Change to Enemy&
+void fight(Player &player, Enemy &enemy) {
     while (player.ship->currentHealth > 0 && enemy.health > 0) {
         int num1, num2, playerAnswer, correctAnswer;
         char operation;
@@ -739,6 +608,50 @@ void fight(Player &player, Enemy &enemy) {  // Change to Enemy&
         player.gainXP(50);  // Award XP for winning
     } else {
         std::cout << "You were defeated by the enemy..." << std::endl;
+    }
+}
+
+void randomScenario(Player& player) {
+    player.knowledge += 5;
+    std::srand(static_cast<unsigned int>(std::time(0)));
+
+    int scenario = std::rand() % 5 + 1;
+
+    switch (scenario) {
+        case 1:
+            std::cout << "Nothing happens as you drift through space.\n";
+            break;
+
+        case 2: {
+            int freeGold = std::rand() % 101;
+            player.gold += freeGold;
+            std::cout << "You found a floating cabinet and collected " << freeGold << " gold!\n";
+            break;
+        }
+
+        case 3:
+            std::cout << "An asteroid collision! Solve these equations to stabilize your ship:\n";
+            equationChallenge();
+            break;
+
+        case 4:{
+            std::cout << "You encounter an enemy ship!\n";
+            Enemy darkShip;
+            darkShip.damage = 10;
+            darkShip.health = 100;
+            darkShip.type = "Stealth Ship";
+            fight(player, darkShip);
+            player.knowledge += 5;
+            break;
+        }
+        case 5:
+            std::cout << "You meet a mysterious NPC! (NPC Interaction skipped for now)\n";
+            player.knowledge += 5;
+            break;
+
+        default:
+            std::cout << "An unexpected event occurs in space.\n";
+            break;
     }
 }
 
@@ -801,13 +714,11 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
     std::cout << "Congratulations! You've completed all stages!\n";
 }
 
-
 void game_menu(Player& player) {
     int choice = 0;
 
     std::vector<Weapon> weapons = loadWeaponsFromXML("data/weapons.xml");
     std::vector<Stage> stages = loadStagesFromXML("data/levels.xml");
-    std::vector<Buff> buffs = loadBuffsFromXML("data/buffs.xml");
     std::vector<NPC> npcs = loadNpcsFromXML("data/npc.xml");
 
     player.inventory->add_random_items(weapons);
@@ -853,6 +764,7 @@ void game_menu(Player& player) {
             case 5:
                 clearScreen();
                 std::cout << "You're not in a trading area.";
+                player.canPlayerTrade();
                 waitForKeypress();
                 break;
             case 6:
@@ -864,6 +776,49 @@ void game_menu(Player& player) {
                 break;
         }
     } while (choice != 6);
+}
+
+void main_menu() {
+    clearScreen();
+    int choice = 0;
+    do {
+        clearScreen();
+        std::cout << "\nMain Menu:\n";
+        std::cout << "1. New Game\n";
+        std::cout << "2. Leaderboard\n";
+        std::cout << "3. Exit\n";
+        std::cout << "\nChoose an option: ";
+        std::cin >> choice;
+
+        switch (choice) {
+            case 1: {
+                clearScreen();
+                std::string player_name;
+                std::cout << "\nEnter your name: ";
+                std::cin >> player_name;
+                while (player_name.length() > 20){
+                    std::cout << "\nName must be less than 20 characters. ";
+                    std::cout << "\nEnter your name: ";
+                    std::cin >> player_name;
+                }
+                Player player(player_name);
+                game_menu(player);
+                break;
+            }
+            case 2:
+                clearScreen();
+                std::cout << "Not available. Check Later\n";
+                waitForKeypress();
+                break;
+            case 3:
+                std::cout << "Exit...\n";
+                break;
+            default:
+                clearScreen();
+                std::cout << "Invalid input, try again.\n";
+                break;
+        }
+    } while (choice != 3);
 }
 
 int main() {
