@@ -537,16 +537,20 @@ void ship_menu(Player& player) {
 
             case 3: {
                 std::string answer;
-                std::cout << "Would you like to repair your ship? (100 gold) [Y/N]: ";
-                std::cin >> answer;
-                if (answer == "Y" || answer == "y") {
-                    if (player.gold >= repairCost) {
-                        player.gold -= repairCost;
-                        loadingEffect(5,"\nRepairing your ship");
-                        player.ship->repair_ship();
-                        std::cout << "Remaining gold: " << player.gold << "\n";
-                    } else {
-                        std::cout << "\nYou don't have enough gold (100 required).\n";
+                if (player.ship->maxHealth == player.ship->currentHealth){
+                    std::cout << "Your ship is already fully repaired.";
+                } else {
+                    std::cout << "Would you like to repair your ship? (100 gold) [Y/N]: ";
+                    std::cin >> answer;
+                    if (answer == "Y" || answer == "y") {
+                        if (player.gold >= repairCost) {
+                            player.gold -= repairCost;
+                            loadingEffect(5,"\nRepairing your ship");
+                            player.ship->repair_ship();
+                            std::cout << "Remaining gold: " << player.gold << "\n";
+                        } else {
+                            std::cout << "\nYou don't have enough gold (100 required).\n";
+                        }
                     }
                 }
                 waitForKeypress();
