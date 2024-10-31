@@ -622,7 +622,181 @@ void fight(Player &player, Enemy &enemy) {
     }
 }
 
-void randomScenario(Player& player) {
+void asteroidCollisionChallenge(Player& player) {
+    int goodAnswer = 0;
+    std::cout << "\nYou are flying through an asteroid field, your left wing has hit an asteroid.\nComplete this 3 challange to stabilize you ship!\n";
+    for (int i = 0; i < 3; ++i) {
+        waitForKeypress();
+        int num1 = rand() % 10 + 1;
+        int num2 = rand() % 10 + 1;
+        int correctAnswer = num1 * num2;
+
+        std::cout << "\n\nYou have to recover you ship, solve this equation to steer: "
+                  << num1 << " * " << num2 << " = ?" << std::endl;
+
+        auto start = std::chrono::steady_clock::now();
+        std::string answer;
+        bool answeredInTime = false;
+
+        while (std::chrono::steady_clock::now() - start < std::chrono::seconds(5)) {
+            if (_kbhit()) {
+                char ch = _getch();
+                if (ch == '\r') break;
+                answer += ch;
+                answeredInTime = true;
+            }
+        }
+
+
+        if (!answeredInTime || answer.empty()) {
+            std::cout << "\nYou could not avoid this asteroid.\n Part of your ship is badly damaged. (-30)!\n";
+            player.ship->currentHealth -= 30;
+        } else {
+            int userAnswer = std::stoi(answer);
+            if (userAnswer == correctAnswer) {
+                goodAnswer += 1;
+                std::cout << "Asteroid avoided! Stay focused!.\n";
+            } else {
+                std::cout << "Incorrect. The answer was: " << correctAnswer << ". You failed to steer your ship! (-15).\n";
+                player.ship->currentHealth -= 20;
+            }
+        }
+
+        if (player.ship->currentHealth <= 0) {
+            std::cout << "Your couldn't avoid the asteroids. \nYour ship has fallen to pieces.\n";
+            //endgame function
+            break;
+        }
+    }
+
+
+    switch(goodAnswer) {
+        case 0:
+            std::cout << "\nSomehow you made it. Unbelivable...";
+            break;
+        case 1:
+            std::cout << "\nYou did you best, your left wing fully fell off.";
+            break;
+        case 2:
+            std::cout << "\nWell done! Survived the asteroid collosion with minimal damage.";
+            break;
+        default:
+            std::cout << "\nPerfect steering captain! You saved the day!";
+            break;
+    }
+    std::cout << "\nChallenge complete. Player health: " << player.ship->currentHealth << std::endl;
+    waitForKeypress();
+
+}
+
+void game_progression(Player& player, const std::vector<Stage>& stages, size_t& currentStage, size_t& currentLevel) {
+        // Check if the current stage is within bounds
+        if (player.currentStage >= stages.size()) {
+            std::cout << "No more stages available.\n";
+            return;
+        }
+
+        // Loop through stages starting from currentStage
+        for (size_t stageIndex = player.currentStage; stageIndex < stages.size(); ++stageIndex) {
+            const auto& stage = stages[stageIndex];
+
+            // Loop through levels starting from currentLevel for the current stage
+            for (size_t levelIndex = player.currentLevel; levelIndex < stage.levels.size(); ++levelIndex) {
+                const auto& level = stage.levels[levelIndex];
+                std::cout << "\nNow in Level: " << level.name << " (" << level.difficulty << ")\n";
+
+
+                for (const Enemy& enemy : level.enemies) {
+                    std::cout << "Encountered Enemy: " << enemy.type << " - Health: " << enemy.health << ", Damage: " << enemy.damage << "\n";
+
+                    // Copy the enemy for the fight function if you need to modify it
+                    Enemy enemyCopy = enemy; // Create a copy for the fight
+                    fight(player, enemyCopy);
+                }
+
+
+                std::cout << "Player fights through the level...\n";
+                waitForKeypress();
+
+                player.gold += level.rewards.gold;
+                player.xp += level.rewards.xp;
+                std::cout << "\nLevel Completed!\n";
+                std::cout << "Rewards: " << level.rewards.gold << " gold, " << level.rewards.xp << " XP\n";
+
+                waitForKeypress();
+
+                char choice;
+                std::cout << "\nChoose an option:\n";
+                std::cout << "1. Continue to the next level\n";
+                std::cout << "2. Return to the main menu\n";
+                std::cout << "Enter your choice: ";
+                std::cin >> choice;
+
+                if (choice == '2') {
+                    player.currentStage = stageIndex;
+                    player.currentLevel = levelIndex + 1;
+                    std::cout << "Returning to the main menu...\n";
+                    return;
+                }
+            }
+
+            player.currentLevel = 0;
+            std::cout << "Stage " << stage.name << " completed!\n";
+            waitForKeypress();
+        }
+
+        std::cout << "Congratulations! You've completed all stages!\n";
+    }
+
+NPC getRandomNpc(const std::vector<NPC>& npcs, int playerStage) {
+    std::vector<NPC> eligibleNpcs;
+
+    for (const NPC& npc : npcs) {
+        if (npc.stage <= playerStage) {
+            eligibleNpcs.push_back(npc);
+        }
+    }
+
+    if (eligibleNpcs.empty()) {
+        throw std::runtime_error("No eligible NPCs found for the player's current stage.");
+    }
+
+    // Select a random NPC from eligible list
+    int randomIndex = rand() % eligibleNpcs.size();
+    return eligibleNpcs[randomIndex];
+}
+
+Weapon findWeaponByRarity(const std::vector<Weapon>& weapons, const std::string& rarity) {
+    for (const Weapon& weapon : weapons) {
+        if (weapon.rarity == rarity) {
+            return weapon;
+        }
+    }
+
+    throw std::runtime_error("No weapon found with the specified rarity.");
+}
+
+void npcEquationChallange(Player& player, const NPC& npc, const std::vector<Weapon>& weapons) {
+    std::cout << npc.quest << "\nEquation: " << npc.equation << std::endl;
+
+    std::string playerAnswer;
+    std::cout << "Enter your answer: ";
+    std::cin >> playerAnswer;
+
+    if (playerAnswer == npc.answer) {
+        try {
+            Weapon rewardWeapon = findWeaponByRarity(weapons, npc.reward);
+            std::cout << "Correct! You've received a " << rewardWeapon.rarity << " weapon: "
+                      << rewardWeapon.name << " with " << rewardWeapon.damage << " damage." << std::endl;
+        } catch (const std::runtime_error& e) {
+            std::cerr << e.what() << std::endl;
+        }
+    } else {
+        std::cout << "Incorrect answer. No reward this time." << std::endl;
+    }
+}
+
+void randomScenario(Player& player, const std::vector<Weapon>& weapons) {
     player.knowledge += 5;
     std::srand(static_cast<unsigned int>(std::time(0)));
 
@@ -642,90 +816,35 @@ void randomScenario(Player& player) {
 
         case 3:
             std::cout << "An asteroid collision! Solve these equations to stabilize your ship:\n";
-            //AstreoidChallange function
+            asteroidCollisionChallenge(player);
             break;
 
-        case 4:{
+        case 4: {
             std::cout << "You encounter an enemy ship!\n";
             Enemy darkShip;
-            darkShip.damage = 10;
-            darkShip.health = 100;
+            darkShip.damage = 10 * player.currentStage + 1;
+            darkShip.health = (100 * player.currentStage + 1) / 2;
             darkShip.type = "Stealth Ship";
             fight(player, darkShip);
             player.knowledge += 5;
             break;
         }
-        case 5:
-            std::cout << "You meet a mysterious NPC! (NPC Interaction skipped for now)\n";
-            //Interaction function
-            player.knowledge += 5;
+
+        case 5: {
+            std::cout << "Not implemented";
+            //std::vector<Weapon> weapons = loadWeaponsFromXML("data/weapons.xml");
+            //std::vector<NPC> npcs = loadNpcsFromXML("data/npc.xml");
+            //std::cout << "You meet a mysterious NPC!\n";
+            //NPC randomNPC = getRandomNpc(npcs, player.currentStage+1);
+            //npcEquationChallange(player, randomNPC, weapons); // Pass weapons
+            //player.knowledge += 5;
             break;
+        }
 
         default:
             std::cout << "An unexpected event occurs in space.\n";
             break;
     }
-}
-
-void game_progression(
-                      ,
-Player& player, const std::vector<Stage>& stages, size_t& currentStage, size_t& currentLevel) {
-    // Check if the current stage is within bounds
-    if (player.currentStage >= stages.size()) {
-        std::cout << "No more stages available.\n";
-        return;
-    }
-
-    // Loop through stages starting from currentStage
-    for (size_t stageIndex = player.currentStage; stageIndex < stages.size(); ++stageIndex) {
-        const auto& stage = stages[stageIndex];
-
-        // Loop through levels starting from currentLevel for the current stage
-        for (size_t levelIndex = player.currentLevel; levelIndex < stage.levels.size(); ++levelIndex) {
-            const auto& level = stage.levels[levelIndex];
-            std::cout << "\nNow in Level: " << level.name << " (" << level.difficulty << ")\n";
-
-
-            for (const Enemy& enemy : level.enemies) {
-                std::cout << "Encountered Enemy: " << enemy.type << " - Health: " << enemy.health << ", Damage: " << enemy.damage << "\n";
-
-                // Copy the enemy for the fight function if you need to modify it
-                Enemy enemyCopy = enemy; // Create a copy for the fight
-                fight(player, enemyCopy);
-            }
-
-
-            std::cout << "Player fights through the level...\n";
-            waitForKeypress();
-
-            player.gold += level.rewards.gold;
-            player.xp += level.rewards.xp;
-            std::cout << "\nLevel Completed!\n";
-            std::cout << "Rewards: " << level.rewards.gold << " gold, " << level.rewards.xp << " XP\n";
-
-            waitForKeypress();
-
-            char choice;
-            std::cout << "\nChoose an option:\n";
-            std::cout << "1. Continue to the next level\n";
-            std::cout << "2. Return to the main menu\n";
-            std::cout << "Enter your choice: ";
-            std::cin >> choice;
-
-            if (choice == '2') {
-                player.currentStage = stageIndex;
-                player.currentLevel = levelIndex + 1;
-                std::cout << "Returning to the main menu...\n";
-                return;
-            }
-        }
-
-        player.currentLevel = 0;
-        std::cout << "Stage " << stage.name << " completed!\n";
-        waitForKeypress();
-    }
-
-    std::cout << "Congratulations! You've completed all stages!\n";
 }
 
 void game_menu(Player& player) {
@@ -754,14 +873,14 @@ void game_menu(Player& player) {
         switch (choice) {
             case 1:
                 clearScreen();
-                std::cout<< "The mission continues...\n";
-                game_progression(player,stages,player.currentStage,player.currentLevel);
+                std::cout << "The mission continues...\n";
+                game_progression(player, stages, player.currentStage, player.currentLevel);
                 waitForKeypress();
                 break;
             case 2:
                 clearScreen();
                 std::cout << "Exploring the unknown..\n";
-                randomScenario(player);
+                randomScenario(player, weapons); // Pass weapons here
                 waitForKeypress();
                 break;
             case 3:
