@@ -616,7 +616,7 @@ void fight(Player &player, Enemy &enemy) {
     // Determine result of the fight
     if (player.ship->currentHealth > 0) {
         std::cout << "You defeated the enemy!" << std::endl;
-        player.gainXP(50);  // Award XP for winning
+        //player.gainXP(50);  // Award XP for winning
     } else {
         std::cout << "You were defeated by the enemy..." << std::endl;
     }
@@ -727,9 +727,9 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
 
                 char choice;
                 std::cout << "\nChoose an option:\n";
-                std::cout << "1. Continue to the next level\n";
+                std::cout << "\n1. Continue to the next level\n";
                 std::cout << "2. Return to the main menu\n";
-                std::cout << "Enter your choice: ";
+                std::cout << "\nEnter your choice: ";
                 std::cin >> choice;
 
                 if (choice == '2') {
