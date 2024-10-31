@@ -31,13 +31,14 @@ struct Weapon {
     std::string rarity;
 };
 
-
 struct NPC {
     int id;
     int stage;
     std::string name;
     std::string quest;
     std::string reward;
+    std::string equation;
+    std::string answer;
 };
 
 class Reward {
@@ -202,7 +203,7 @@ public:
         } else if (difference <= 2) {
             return ship->damage;
         } else if (difference <= 5) {
-            return ship->damage / 2;+
+            return ship->damage / 2;
         } else {
             return 0;
         }
@@ -240,7 +241,6 @@ std::vector<NPC> loadNpcsFromXML(const std::string& filePath) {
         return npcs; // Return empty vector if no npcs element is found
     }
 
-    // Iterate through each <npc> element
     for (tinyxml2::XMLElement* npcElement = npcsElement->FirstChildElement("npc");
          npcElement != nullptr; npcElement = npcElement->NextSiblingElement("npc")) {
 
@@ -262,6 +262,16 @@ std::vector<NPC> loadNpcsFromXML(const std::string& filePath) {
         const char* reward = npcElement->FirstChildElement("Reward")->GetText();
         if (reward) {
             npc.reward = reward;
+        }
+
+        const char* equation = npcElement->FirstChildElement("Equation")->GetText();
+        if (equation) {
+            npc.equation = equation;
+        }
+
+        const char* answer = npcElement->FirstChildElement("Answer")->GetText();
+        if (answer) {
+            npc.answer = answer;
         }
 
         npcs.push_back(npc);
@@ -307,8 +317,6 @@ std::vector<Weapon> loadWeaponsFromXML(const std::string& filePath) {
 
     return weapons; // Return the vector of weapons
 }
-
-
 
 std::vector<Stage> loadStagesFromXML(const std::string& filePath) {
     std::vector<Stage> stages;
@@ -421,8 +429,11 @@ void printNpcs(const std::vector<NPC>& npcs) {
         std::cout << "Name: " << npc.name << std::endl;
         std::cout << "Quest: " << npc.quest << std::endl;
         std::cout << "Reward: " << npc.reward << std::endl;
-        std::cout << "--------------------" << std::endl;
+        std::cout << "Equation: " << npc.equation << std::endl;
+        std::cout << "Answer: " << npc.answer << std::endl;
+        std::cout << "---------------------------" << std::endl;
     }
+    waitForKeypress();
 }
 
 void clearScreen() {
@@ -631,7 +642,7 @@ void randomScenario(Player& player) {
 
         case 3:
             std::cout << "An asteroid collision! Solve these equations to stabilize your ship:\n";
-            equationChallenge();
+            //AstreoidChallange function
             break;
 
         case 4:{
@@ -646,6 +657,7 @@ void randomScenario(Player& player) {
         }
         case 5:
             std::cout << "You meet a mysterious NPC! (NPC Interaction skipped for now)\n";
+            //Interaction function
             player.knowledge += 5;
             break;
 
@@ -655,7 +667,9 @@ void randomScenario(Player& player) {
     }
 }
 
-void game_progression(Player& player, const std::vector<Stage>& stages, size_t& currentStage, size_t& currentLevel) {
+void game_progression(
+                      ,
+Player& player, const std::vector<Stage>& stages, size_t& currentStage, size_t& currentLevel) {
     // Check if the current stage is within bounds
     if (player.currentStage >= stages.size()) {
         std::cout << "No more stages available.\n";
