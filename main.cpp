@@ -598,6 +598,9 @@ void fight(Player &player, Enemy &enemy) {
         // Calculate damage based on accuracy
         int inflictedDamage = player.calculateDamage(correctAnswer, playerAnswer);
         enemy.health -= inflictedDamage;  // Now valid since enemy is not const
+        if (enemy.health < 0) {
+            enemy.health = 0;
+        }
         std::cout << "You dealt " << inflictedDamage << " damage to the enemy!" << std::endl;
 
         // Enemy's turn to attack
