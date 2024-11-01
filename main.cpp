@@ -628,7 +628,6 @@ void fight(Player &player, Enemy &enemy) {
     // Determine result of the fight
     if (player.ship->currentHealth > 0) {
         std::cout << "You defeated the enemy!" << std::endl;
-        player.noCoutgainXP(50);  // Award XP for winning
     } else {
         std::cout << "You were defeated by the enemy..." << std::endl;
     }
@@ -715,7 +714,7 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
             // Loop through levels starting from currentLevel for the current stage
             for (size_t levelIndex = player.currentLevel; levelIndex < stage.levels.size(); ++levelIndex) {
                 const auto& level = stage.levels[levelIndex];
-                std::cout << "\nNow in Level: " << level.name << " (" << level.difficulty << ")\n";
+                std::cout << "\nNow in " << level.name << " (" << level.difficulty << ")\n";
 
 
                 for (const Enemy& enemy : level.enemies) {
