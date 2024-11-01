@@ -593,6 +593,7 @@ void generateEquation(int &num1, int &num2, char &operation, int &correctAnswer)
 }
 
 void fight(Player &player, Enemy &enemy) {
+
     while (player.ship->currentHealth > 0 && enemy.health > 0) {
         int num1, num2, playerAnswer, correctAnswer;
         char operation;
@@ -605,7 +606,7 @@ void fight(Player &player, Enemy &enemy) {
 
         // Calculate damage based on accuracy
         int inflictedDamage = player.calculateDamage(correctAnswer, playerAnswer);
-        enemy.health -= inflictedDamage;  // Now valid since enemy is not const
+        enemy.health -= inflictedDamage;
         if (enemy.health < 0) {
             enemy.health = 0;
         }
@@ -724,9 +725,6 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
                     Enemy enemyCopy = enemy; // Create a copy for the fight
                     fight(player, enemyCopy);
                 }
-
-
-                std::cout << "Player fights through the level...\n";
                 waitForKeypress();
 
                 player.gold += level.rewards.gold;
@@ -735,9 +733,10 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
                 std::cout << "Rewards: " << level.rewards.gold << " gold, " << level.rewards.xp << " XP\n";
 
                 waitForKeypress();
+                clearScreen();
 
                 char choice;
-                std::cout << "\n\nChoose an option:";
+                std::cout << "Choose an option:";
                 std::cout << "\n1. Continue to the next level\n";
                 std::cout << "2. Return to the main menu\n";
                 std::cout << "\nEnter your choice: ";
@@ -754,6 +753,7 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
             player.currentLevel = 0;
             std::cout << "Stage " << stage.name << " completed!\n";
             waitForKeypress();
+            clearScreen();
         }
 
         std::cout << "Congratulations! You've completed all stages!\n";
