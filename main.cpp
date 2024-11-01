@@ -214,6 +214,10 @@ public:
         std::cout << "You gained " << points << " XP!" << std::endl;
     }
 
+    void noCoutgainXP(int points) {
+        xp += points;
+    }
+
     void canPlayerTrade(){
         canTrade = (currentLevel % 5 == 0) ? true : false;
         std::cout << (canTrade ? "yes" : "no") << std::endl;
@@ -623,7 +627,7 @@ void fight(Player &player, Enemy &enemy) {
     // Determine result of the fight
     if (player.ship->currentHealth > 0) {
         std::cout << "You defeated the enemy!" << std::endl;
-        //player.gainXP(50);  // Award XP for winning
+        player.noCoutgainXP(50);  // Award XP for winning
     } else {
         std::cout << "You were defeated by the enemy..." << std::endl;
     }
