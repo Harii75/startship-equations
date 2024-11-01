@@ -214,6 +214,10 @@ public:
         std::cout << "You gained " << points << " XP!" << std::endl;
     }
 
+    void noCoutgainXP(int points) {
+        xp += points;
+    }
+
     void canPlayerTrade(){
         canTrade = (currentLevel % 5 == 0) ? true : false;
         std::cout << (canTrade ? "yes" : "no") << std::endl;
@@ -537,16 +541,20 @@ void ship_menu(Player& player) {
 
             case 3: {
                 std::string answer;
-                std::cout << "Would you like to repair your ship? (100 gold) [Y/N]: ";
-                std::cin >> answer;
-                if (answer == "Y" || answer == "y") {
-                    if (player.gold >= repairCost) {
-                        player.gold -= repairCost;
-                        loadingEffect(5,"\nRepairing your ship");
-                        player.ship->repair_ship();
-                        std::cout << "Remaining gold: " << player.gold << "\n";
-                    } else {
-                        std::cout << "\nYou don't have enough gold (100 required).\n";
+                if (player.ship->maxHealth == player.ship->currentHealth){
+                    std::cout << "Your ship is already fully repaired.";
+                } else {
+                    std::cout << "Would you like to repair your ship? (100 gold) [Y/N]: ";
+                    std::cin >> answer;
+                    if (answer == "Y" || answer == "y") {
+                        if (player.gold >= repairCost) {
+                            player.gold -= repairCost;
+                            loadingEffect(5,"\nRepairing your ship");
+                            player.ship->repair_ship();
+                            std::cout << "Remaining gold: " << player.gold << "\n";
+                        } else {
+                            std::cout << "\nYou don't have enough gold (100 required).\n";
+                        }
                     }
                 }
                 waitForKeypress();
@@ -585,6 +593,7 @@ void generateEquation(int &num1, int &num2, char &operation, int &correctAnswer)
 }
 
 void fight(Player &player, Enemy &enemy) {
+
     while (player.ship->currentHealth > 0 && enemy.health > 0) {
         int num1, num2, playerAnswer, correctAnswer;
         char operation;
@@ -597,7 +606,10 @@ void fight(Player &player, Enemy &enemy) {
 
         // Calculate damage based on accuracy
         int inflictedDamage = player.calculateDamage(correctAnswer, playerAnswer);
-        enemy.health -= inflictedDamage;  // Now valid since enemy is not const
+        enemy.health -= inflictedDamage;
+        if (enemy.health < 0) {
+            enemy.health = 0;
+        }
         std::cout << "You dealt " << inflictedDamage << " damage to the enemy!" << std::endl;
 
         // Enemy's turn to attack
@@ -616,7 +628,7 @@ void fight(Player &player, Enemy &enemy) {
     // Determine result of the fight
     if (player.ship->currentHealth > 0) {
         std::cout << "You defeated the enemy!" << std::endl;
-        player.gainXP(50);  // Award XP for winning
+        player.noCoutgainXP(50);  // Award XP for winning
     } else {
         std::cout << "You were defeated by the enemy..." << std::endl;
     }
@@ -713,9 +725,6 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
                     Enemy enemyCopy = enemy; // Create a copy for the fight
                     fight(player, enemyCopy);
                 }
-
-
-                std::cout << "Player fights through the level...\n";
                 waitForKeypress();
 
                 player.gold += level.rewards.gold;
@@ -724,12 +733,13 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
                 std::cout << "Rewards: " << level.rewards.gold << " gold, " << level.rewards.xp << " XP\n";
 
                 waitForKeypress();
+                clearScreen();
 
                 char choice;
-                std::cout << "\nChoose an option:\n";
-                std::cout << "1. Continue to the next level\n";
+                std::cout << "Choose an option:";
+                std::cout << "\n1. Continue to the next level\n";
                 std::cout << "2. Return to the main menu\n";
-                std::cout << "Enter your choice: ";
+                std::cout << "\nEnter your choice: ";
                 std::cin >> choice;
 
                 if (choice == '2') {
@@ -743,6 +753,7 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
             player.currentLevel = 0;
             std::cout << "Stage " << stage.name << " completed!\n";
             waitForKeypress();
+            clearScreen();
         }
 
         std::cout << "Congratulations! You've completed all stages!\n";
