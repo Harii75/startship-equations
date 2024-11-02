@@ -11,6 +11,7 @@
 #include <chrono>
 #include <memory>
 #include <thread>
+#include <cmath>
 
 class Player;
 
@@ -173,6 +174,8 @@ public:
     int gold;
     int level;
     int xp;
+    int upToNextLevel;
+    int currentExpectedXP;
     int knowledge;
     ShipManager* ship;
     InventoryManager* inventory;
@@ -181,7 +184,7 @@ public:
     int highscore = 0;
     bool canTrade;
 
-    Player(const std::string& name) : name(name), gold(500), level(1), xp(0), knowledge(0) {
+    Player(const std::string& name) : name(name), gold(500), level(1), xp(0), upToNextLevel(240), knowledge(0) {
         ship = new ShipManager();
         inventory = new InventoryManager();
     }
@@ -189,7 +192,7 @@ public:
     void display_stats() {
         std::cout << "\n######################################################\n";
         std::cout << "                 Captain: " << name << "             \n";
-        std::cout << "   Gold: " << gold << "\t\t\tLevel: " << level << "   XP: " << xp << "/240  \n";
+        std::cout << "   Gold: " << gold << "\t\t\tLevel: " << level << "   XP: " << xp << "/" << upToNextLevel << "\n";
         std::cout << "   Damage: " << ship->damage <<  "\t\t\tHealth: " << ship->currentHealth <<"/" << ship->maxHealth << "\n";
         std::cout << "   Stage: [ " << currentStage+1 << " - " << currentLevel+1 << " ]\t\tKnowledge: " << knowledge << " \n";
         std::cout << "                    Score: " << highscore << " \n";
@@ -212,11 +215,28 @@ public:
     void gainXP(int points) {
         xp += points;
         std::cout << "You gained " << points << " XP!" << std::endl;
+
+        //Check Level Up
+        while(xp >= upToNextLevel){
+            levelUp();
+        }
     }
 
     void noCoutgainXP(int points) {
         xp += points;
+        //Check Level Up
+        while(xp >= upToNextLevel){
+            levelUp();
+        }   
     }
+
+    void levelUp() {
+        xp -= upToNextLevel;
+        level++;
+        upToNextLevel = static_cast<int>(upToNextLevel * 1.2);
+        std::cout << "Congratulations! You've reached level " << level << "!\n";
+    }
+
 
     void canPlayerTrade(){
         canTrade = (currentLevel % 5 == 0) ? true : false;
@@ -628,6 +648,7 @@ void fight(Player &player, Enemy &enemy) {
     // Determine result of the fight
     if (player.ship->currentHealth > 0) {
         std::cout << "You defeated the enemy!" << std::endl;
+        player.gainXP(50);
     } else {
         std::cout << "You were defeated by the enemy..." << std::endl;
     }
