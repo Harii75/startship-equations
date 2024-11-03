@@ -177,7 +177,6 @@ void waitForKeypress() {
 }
 
 
-
 class Player {
 public:
     float accuracy = 1.0;
