@@ -235,8 +235,6 @@ public:
 
     void canPlayerTrade(){
         canTrade = (currentLevel % 5 == 0) ? true : false;
-        std::cout << (canTrade ? "yes" : "no") << std::endl;
-        std::cout << currentLevel;
     }
 
     ~Player() {
@@ -787,8 +785,6 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
 
                 for (const Enemy& enemy : level.enemies) {
                     std::cout << "Encountered Enemy: " << enemy.type << " - Health: " << enemy.health << ", Damage: " << enemy.damage << "\n";
-
-                    // Copy the enemy for the fight function if you need to modify it
                     Enemy enemyCopy = enemy; // Create a copy for the fight
                     fight(player, enemyCopy);
                 }
@@ -1022,7 +1018,42 @@ void runShop(Player& player, const std::vector<Buff>& buffs) {
     }
 }
 
+void tradeMenu(Player& player, const std::vector<Buff>& buffs) {
+    player.canPlayerTrade();
+    if (player.canTrade) {
+        clearScreen();
+        int choice;
+        std::cout << "Welcome to the market! What would you like to do today?\n\n";
+        std::cout << "1. Sell\n";
+        std::cout << "2. Buy\n";
+        std::cout << "3. Exit\n";
+        std::cout << "\nEnter your choice: ";
+        std::cin >> choice;
 
+        switch (choice) {
+            case 1:
+                clearScreen();
+                player.inventory->show_inventory();
+                waitForKeypress();
+                tradeMenu(player,buffs);
+                break;
+            case 2:
+                clearScreen();
+                runShop(player, buffs);
+                tradeMenu(player,buffs);
+                break;
+            case 3:
+                std::cout << "Exiting.\n";
+                break;
+            default:
+                std::cout << "Invalid choice. Please try again.\n";
+                break;
+        }
+    } else {
+        std::cout << "\nYou are not in a trading area.\n";
+        waitForKeypress();
+    }
+}
 
 void game_menu(Player& player) {
     int choice = 0;
@@ -1074,10 +1105,7 @@ void game_menu(Player& player) {
                 break;
             case 5:
                 clearScreen();
-                runShop(player,buffs);
-                //std::cout << "You're not in a trading area.";
-                //player.canPlayerTrade();
-                waitForKeypress();
+                tradeMenu(player,buffs);
                 break;
             case 6:
                 clearScreen();
