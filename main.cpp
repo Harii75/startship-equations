@@ -593,7 +593,7 @@ void ship_menu(Player& player) {
                 if (answer == "Y" || answer == "y") {
                     if (player.gold >= upgradeCost) {
                         player.gold -= upgradeCost;
-                        loadingEffect(5,"\nUpgrading your ship");
+                        (5,"\nUpgrading your ship");
                         player.ship->upgrade_ship();
                         std::cout << "Remaining gold: " << player.gold << "\n";
                     } else {
@@ -667,7 +667,7 @@ void fight(Player &player, Enemy &enemy) {
         generateEquation(num1, num2, operation, correctAnswer);
 
         // Display equation and get player's answer
-        std::cout << "Solve this equation to attack: " << num1 << " " << operation << " " << num2 << " = ";
+        std::cout << "\nSolve this equation to attack: " << num1 << " " << operation << " " << num2 << " = ";
         std::cin >> playerAnswer;
 
         // Calculate damage based on accuracy
@@ -676,24 +676,25 @@ void fight(Player &player, Enemy &enemy) {
         if (enemy.health < 0) {
             enemy.health = 0;
         }
+        clearScreen();
         std::cout << "You dealt " << inflictedDamage << " damage to the enemy!" << std::endl;
 
         // Enemy's turn to attack
         if (enemy.health > 0) {
             int enemyDamage = rand() % 10 + 5;  // Random enemy damage
             player.ship->currentHealth -= enemyDamage;
-            std::cout << "The enemy dealt " << enemyDamage << " damage to you!" << std::endl;
+            loadingEffect(5,"\nYou enemy's turn to attack!");
+            std::cout << "The enemy dealt " << enemyDamage << " damage to you!\n" << std::endl;
         }
 
         // Display health status
         std::cout << "Your health: " << player.ship->currentHealth << std::endl;
         std::cout << "Enemy health: " << enemy.health << std::endl;
-        std::cout << "-----------------------------" << std::endl;
     }
 
     // Determine result of the fight
     if (player.ship->currentHealth > 0) {
-        std::cout << "You defeated the enemy!" << std::endl;
+        std::cout << "\nYou defeated the enemy!" << std::endl;
     } else {
         std::cout << "You were defeated by the enemy..." << std::endl;
     }
@@ -789,6 +790,7 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
                     fight(player, enemyCopy);
                 }
                 waitForKeypress();
+                clearScreen();
 
                 player.gold += level.rewards.gold;
                 player.xp += level.rewards.xp;
@@ -799,7 +801,7 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
                 clearScreen();
 
                 char choice;
-                std::cout << "Choose an option:";
+                std::cout << "Choose an option:\n";
                 std::cout << "\n1. Continue to the next level\n";
                 std::cout << "2. Return to the main menu\n";
                 std::cout << "\nEnter your choice: ";
@@ -808,6 +810,7 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
                 if (choice == '2') {
                     player.currentStage = stageIndex;
                     player.currentLevel = levelIndex + 1;
+                    clearScreen();
                     std::cout << "Returning to the main menu...\n";
                     return;
                 }
