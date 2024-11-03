@@ -1,0 +1,68 @@
+<buffs>
+    <buff>
+        <id>1</id>
+        <name>Calculation Focus</name>
+        <duration>10</duration>
+        <effect>Increases accuracy of calculations by 10%</effect>
+    </buff>
+    <buff>
+        <id>2</id>
+        <name>Quick Reflexes</name>
+        <duration>10</duration>
+        <effect>Increases calculation time by 10 seconds</effect>
+    </buff>
+    <buff>
+        <id>3</id>
+        <name>Math Mastery</name>
+        <duration>10</duration>
+        <effect>Boosts points gained from successful calculations by 20%</effect>
+    </buff>
+    <buff>
+        <id>4</id>
+        <name>Adaptive Learning</name>
+        <duration>10</duration>
+        <effect>Reduces penalties for incorrect calculations by 50%</effect>
+    </buff>
+    <buff>
+        <id>5</id>
+        <name>Enhanced Logic</name>
+        <duration>10</duration>
+        <effect>Improves calculation efficiency, granting an additional 5 points for each correct answer</effect>
+    </buff>
+    <buff>
+        <id>6</id>
+        <name>Mathematical Intuition</name>
+        <duration>10</duration>
+        <effect>Grants a hint for each calculation challenge, reducing difficulty by one level</effect>
+    </buff>
+    <buff>
+        <id>7</id>
+        <name>Precision Calculation</name>
+        <duration>10</duration>
+        <effect>Boosts the accuracy of calculations in challenging encounters by 15%</effect>
+    </buff>
+    <buff>
+        <id>8</id>
+        <name>Golden Ratio</name>
+        <duration>10</duration>
+        <effect>Increases gold rewards from calculations by 20%</effect>
+    </buff>
+    <buff>
+        <id>9</id>
+        <name>Mental Fortitude</name>
+        <duration>10</duration>
+        <effect>Restores a small amount of health after every three consecutive correct calculations</effect>
+    </buff>
+    <buff>
+        <id>10</id>
+        <name>Astro Calculus</name>
+        <duration>10</duration>
+        <effect>Increases knowledge points gained per correct calculation by 5 points</effect>
+    </buff>
+    <buff>
+        <id>11</id>
+        <name>Intuitive Math</name>
+        <duration>10</duration>
+        <effect>Allows partial credit for answers within a close range of the correct answer</effect>
+    </buff>
+</buffs>

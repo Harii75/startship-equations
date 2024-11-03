@@ -31,6 +31,15 @@ struct Weapon {
     std::string rarity;
 };
 
+struct Buff {
+    int id;
+    std::string name;
+    int duration;
+    std::string effect;
+};
+
+
+
 struct NPC {
     int id;
     int stage;
@@ -167,8 +176,13 @@ void waitForKeypress() {
     _getch();
 }
 
+
+
 class Player {
 public:
+    float accuracy = 1.0;
+    int calculation_time = 30;
+    int knowledge_points = 0;
     std::string name;
     int gold;
     int level;
@@ -180,6 +194,7 @@ public:
     size_t currentLevel = 0;
     int highscore = 0;
     bool canTrade;
+
 
     Player(const std::string& name) : name(name), gold(500), level(1), xp(0), knowledge(0) {
         ship = new ShipManager();
@@ -229,6 +244,7 @@ public:
         delete inventory;
     }
 };
+
 
 std::vector<NPC> loadNpcsFromXML(const std::string& filePath) {
     std::vector<NPC> npcs;
@@ -320,6 +336,58 @@ std::vector<Weapon> loadWeaponsFromXML(const std::string& filePath) {
     }
 
     return weapons; // Return the vector of weapons
+}
+
+std::vector<Buff> loadBuffsFromXML(const std::string& filePath) {
+    std::vector<Buff> buffs;
+    tinyxml2::XMLDocument doc;
+
+    // Load the XML file
+    if (doc.LoadFile(filePath.c_str()) != tinyxml2::XML_SUCCESS) {
+        std::cerr << "Error loading XML file: " << doc.ErrorIDToName(doc.ErrorID()) << std::endl;
+        return buffs; // Return empty vector on failure
+    }
+
+    // Navigate to the <buffs> element
+    tinyxml2::XMLElement* buffsElement = doc.FirstChildElement("buffs");
+    if (!buffsElement) {
+        std::cerr << "No <buffs> element found in the XML file." << std::endl;
+        return buffs; // Return empty vector if no buffs element is found
+    }
+
+    // Loop through each <buff> element
+    for (tinyxml2::XMLElement* buffElement = buffsElement->FirstChildElement("buff");
+         buffElement != nullptr; buffElement = buffElement->NextSiblingElement("buff")) {
+
+        Buff buff;
+
+        // Parse the id of the buff
+        buffElement->FirstChildElement("id")->QueryIntText(&buff.id);
+
+        // Parse the name of the buff
+        const char* name = buffElement->FirstChildElement("name")->GetText();
+        if (name) {
+            buff.name = name;
+        } else {
+            std::cerr << "Warning: <name> not found for one of the buffs." << std::endl;
+        }
+
+        // Parse the duration of the buff
+        buffElement->FirstChildElement("duration")->QueryIntText(&buff.duration);
+
+        // Parse the effect of the buff
+        const char* effect = buffElement->FirstChildElement("effect")->GetText();
+        if (effect) {
+            buff.effect = effect;
+        } else {
+            std::cerr << "Warning: <effect> not found for buff: " << buff.name << std::endl;
+        }
+
+        // Add the buff to the vector
+        buffs.push_back(buff);
+    }
+
+    return buffs; // Return the vector of buffs
 }
 
 std::vector<Stage> loadStagesFromXML(const std::string& filePath) {
@@ -857,12 +925,111 @@ void randomScenario(Player& player, const std::vector<Weapon>& weapons) {
     }
 }
 
+void printBuffs(const std::vector<Buff>& buffs) {
+    for (const auto& buff : buffs) {
+        std::cout << "Buff ID: " << buff.id << "\n";
+        std::cout << "Name: " << buff.name << "\n";
+        std::cout << "Duration: " << buff.duration << " seconds\n";
+        std::cout << "Effect: " << buff.effect << "\n";
+        std::cout << "------------------------\n";
+    }
+}
+
+void applyBuff(Player& player, const Buff& buff) {
+    if (buff.name == "Calculation Focus") {
+        std::cout << buff.name;
+
+    } else if (buff.name == "Quick Reflexes") {
+        std::cout << buff.name;
+
+    } else if (buff.name == "Math Mastery") {
+        std::cout << buff.name;
+
+    } else if (buff.name == "Adaptive Learning") {
+        std::cout << buff.name;
+
+    } else if (buff.name == "Enhanced Logic") {
+        std::cout << buff.name;
+
+    } else if (buff.name == "Mathematical Intuition") {
+        std::cout << buff.name;
+
+    } else if (buff.name == "Precision Calculation") {
+        std::cout << buff.name;
+
+    } else if (buff.name == "Golden Ratio") {
+        std::cout << buff.name;
+
+    } else if (buff.name == "Mental Fortitude") {
+        std::cout << buff.name;
+
+    } else if (buff.name == "Astro Calculus") {
+        std::cout << buff.name;
+
+    } else if (buff.name == "Intuitive Math") {
+        std::cout << buff.name;
+
+    }
+}
+
+void runShop(Player& player, const std::vector<Buff>& buffs) {
+    std::vector<std::pair<Buff, int>> availableBuffs;
+    std::vector<bool> chosen(buffs.size(), false);
+
+    srand(time(0));
+
+    // Select 5 unique random buffs from the buffs vector
+    for (int i = 0; i < 5; ++i) {
+        int randomIndex;
+        do {
+            randomIndex = rand() % buffs.size();
+        } while (chosen[randomIndex]);
+        chosen[randomIndex] = true;
+
+        int price = 50 + rand() % 101;
+        availableBuffs.emplace_back(buffs[randomIndex], price);
+    }
+
+    std::cout << "Welcome to the shop! Here are the available buffs:\n";
+    for (const auto& pair : availableBuffs) {
+        const Buff& buff = pair.first;
+        int price = pair.second;
+        std::cout << "ID: " << buff.id << ", Name: " << buff.name
+                  << ", Duration: " << buff.duration
+                  << ", Effect: " << buff.effect
+                  << ", Price: " << price << " gold\n";
+    }
+
+    int choice;
+    std::cout << "Enter the ID of the buff you want to buy (0 to exit): ";
+    std::cin >> choice;
+
+    if (choice > 0 && choice <= availableBuffs.size()) {
+        int price = availableBuffs[choice - 1].second;
+        if (player.gold >= price) {
+            applyBuff(player, availableBuffs[choice - 1].first);
+            player.gold -= price;
+            std::cout << "You bought " << availableBuffs[choice - 1].first.name
+                      << " for " << price << " gold!\n";
+        } else {
+            std::cout << "You do not have enough gold to buy this buff.\n";
+        }
+    } else if (choice == 0) {
+        std::cout << "Exiting the shop.\n";
+    } else {
+        std::cout << "Invalid choice.\n";
+    }
+}
+
+
+
 void game_menu(Player& player) {
     int choice = 0;
 
     std::vector<Weapon> weapons = loadWeaponsFromXML("data/weapons.xml");
     std::vector<Stage> stages = loadStagesFromXML("data/levels.xml");
     std::vector<NPC> npcs = loadNpcsFromXML("data/npc.xml");
+    std::vector<Buff> buffs = loadBuffsFromXML("data/buffs.xml");
 
     player.inventory->add_random_items(weapons);
 
@@ -906,8 +1073,9 @@ void game_menu(Player& player) {
                 break;
             case 5:
                 clearScreen();
-                std::cout << "You're not in a trading area.";
-                player.canPlayerTrade();
+                runShop(player,buffs);
+                //std::cout << "You're not in a trading area.";
+                //player.canPlayerTrade();
                 waitForKeypress();
                 break;
             case 6:
@@ -920,6 +1088,8 @@ void game_menu(Player& player) {
         }
     } while (choice != 6);
 }
+
+
 
 void main_menu() {
     clearScreen();
