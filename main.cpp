@@ -227,7 +227,7 @@ public:
     void levelUp(int& points) {
     if (points >= xpTreshold) {
         points -= xpTreshold;
-        xpTreshold = static_cast<int>(xpTreshold * 2.2);
+        xpTreshold = static_cast<int>(xpTreshold * 1.75);
         level++;
         std::cout << "Congratulations! You've reached level " << level << "!\n";
     }
