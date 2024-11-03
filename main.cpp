@@ -990,18 +990,19 @@ void runShop(Player& player, const std::vector<Buff>& buffs) {
         availableBuffs.emplace_back(buffs[randomIndex], price);
     }
 
-    std::cout << "Welcome to the shop! Here are the available buffs:\n";
+    std::cout << "Welcome to the shop! Here are the available buffs:\n\n";
+    int num = 1;
     for (const auto& pair : availableBuffs) {
         const Buff& buff = pair.first;
         int price = pair.second;
-        std::cout << "ID: " << buff.id << ", Name: " << buff.name
-                  << ", Duration: " << buff.duration
-                  << ", Effect: " << buff.effect
-                  << ", Price: " << price << " gold\n";
+        std::cout << num << ". Name: " << buff.name
+                  << "\nEffect: " << buff.effect
+                  << "\nPrice: " << price << " gold\n\n";
+        num++;
     }
 
     int choice;
-    std::cout << "Enter the ID of the buff you want to buy (0 to exit): ";
+    std::cout << "Enter the number of the buff you want to buy (0 to exit): ";
     std::cin >> choice;
 
     if (choice > 0 && choice <= availableBuffs.size()) {
