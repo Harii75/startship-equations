@@ -186,6 +186,7 @@ public:
     int gold;
     int level;
     int xp;
+    int xpTreshold;
     int knowledge;
     ShipManager* ship;
     InventoryManager* inventory;
@@ -195,7 +196,7 @@ public:
     bool canTrade;
 
 
-    Player(const std::string& name) : name(name), gold(500), level(1), xp(0), knowledge(0) {
+    Player(const std::string& name) : name(name), gold(500), level(1), xp(0), xpTreshold(240), knowledge(0) {
         ship = new ShipManager();
         inventory = new InventoryManager();
     }
@@ -203,7 +204,7 @@ public:
     void display_stats() {
         std::cout << "\n######################################################\n";
         std::cout << "                 Captain: " << name << "             \n";
-        std::cout << "   Gold: " << gold << "\t\t\tLevel: " << level << "   XP: " << xp << "/240  \n";
+        std::cout << "   Gold: " << gold << "\t\t\tLevel: " << level << "   XP: " << xp << "/" << xpTreshold <<  "\n";
         std::cout << "   Damage: " << ship->damage <<  "\t\t\tHealth: " << ship->currentHealth <<"/" << ship->maxHealth << "\n";
         std::cout << "   Stage: [ " << currentStage+1 << " - " << currentLevel+1 << " ]\t\tKnowledge: " << knowledge << " \n";
         std::cout << "                    Score: " << highscore << " \n";
@@ -223,14 +224,15 @@ public:
         }
     }
 
-    void gainXP(int points) {
-        xp += points;
-        std::cout << "You gained " << points << " XP!" << std::endl;
+    void levelUp(int& points) {
+    if (points >= xpTreshold) {
+        points -= xpTreshold;
+        xpTreshold = static_cast<int>(xpTreshold * 2.2);
+        level++;
+        std::cout << "Congratulations! You've reached level " << level << "!\n";
     }
+}
 
-    void noCoutgainXP(int points) {
-        xp += points;
-    }
 
     void canPlayerTrade(){
         canTrade = (currentLevel % 5 == 0) ? true : false;
@@ -795,6 +797,8 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
                 player.xp += level.rewards.xp;
                 std::cout << "\nLevel Completed!\n";
                 std::cout << "Rewards: " << level.rewards.gold << " gold, " << level.rewards.xp << " XP\n";
+
+                player.levelUp(player.xp);
 
                 waitForKeypress();
                 clearScreen();
