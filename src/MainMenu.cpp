@@ -60,10 +60,11 @@ void game_menu(Player& player) {
     int choice = 0;
 
     // Load game data using FileLoader
-    std::vector<Weapon> weapons = FileLoader::loadWeaponsFromXML("C:\\Users\\theha\\Desktop\\test_game\\data\\weapons.xml");
-    std::vector<Stage> stages = FileLoader::loadStagesFromXML("C:\\Users\\theha\\Desktop\\test_game\\data\\levels.xml");
-    std::vector<NPC> npcs = FileLoader::loadNpcsFromXML("C:\\Users\\theha\\Desktop\\test_game\\data\\npc.xml");
-    std::vector<Buff> buffs = FileLoader::loadBuffsFromXML("C:\\Users\\theha\\Desktop\\test_game\\data\\buffs.xml");
+    std::vector<Weapon> weapons = FileLoader::loadWeaponsFromXML("data/weapons.xml");
+    std::vector<Stage> stages = FileLoader::loadStagesFromXML("data/levels.xml");
+    std::vector<NPC> npcs = FileLoader::loadNpcsFromXML("data/npc.xml");
+    std::vector<Buff> buffs = FileLoader::loadBuffsFromXML("data/buffs.xml");
+
 
     // Add random items to the player's inventory
     player.inventory->add_random_items(weapons);
