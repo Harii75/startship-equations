@@ -1,3 +1,1 @@
-g++ -o my_game main.cpp tinyxml2.cpp
-
-sziasztok
+g++ -Iinclude -Ilib -o build/my_game src/*.cpp lib/tinyxml2.cpp
