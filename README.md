@@ -1,1 +1,1 @@
-g++ -Iinclude -Ilib -o build/my_game src/*.cpp lib/tinyxml2.cpp
+g++ -Iinclude -Ilib -o my_game src/*.cpp lib/tinyxml2.cpp
