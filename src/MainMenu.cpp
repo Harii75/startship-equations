@@ -10,45 +10,10 @@
 #include "Scenarios.h"
 #include "ShipMenu.h"
 #include "TradeMenu.h"
-#include <iostream>
 #include "Player.h"
+#include "test.h"
 #include <cassert>
-
-void testPlayer() {
-    Player player("TestCaptain");
-    
-    assert(player.name == "TestCaptain");
-    assert(player.gold == 500);
-    assert(player.level == 1);
-    assert(player.xp == 0);
-    assert(player.xpTreshold == 240);
-    assert(player.knowledge == 0);
-    assert(player.ship != nullptr);
-    assert(player.inventory != nullptr);
-
-    // Test levelUp method
-    int points = 300;
-    player.levelUp(points);
-    assert(player.level == 2);           // Level should increase
-    assert(player.xpTreshold == 420);    // xpTreshold should increase
-    assert(points == 60);                // Remaining points after leveling up
-
-    // Test canPlayerTrade method
-    player.currentLevel = 4;
-    player.canPlayerTrade();
-    assert(player.canTrade == false);    // Not divisible by 5
-
-    player.currentLevel = 5;
-    player.canPlayerTrade();
-    assert(player.canTrade == true);     // Divisible by 5
-
-    // Print success message
-    std::cout << "All Player tests passed successfully!" << std::endl;
-    waitForKeypress();
-    main_menu();
-}
-
-
+#include <iostream>
 
 void main_menu() {
     clearScreen();
@@ -84,7 +49,8 @@ void main_menu() {
                 waitForKeypress();
                 break;
             case 3:
-                testPlayer();
+                clearScreen();
+                runTests();
                 waitForKeypress();
                 break;
             case 4:
