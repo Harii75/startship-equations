@@ -2,6 +2,8 @@
 #define SHIP_MANAGER_H
 
 #include <iostream>
+#include "ShipManager.h"
+#include "InventoryManager.h"
 
 class ShipManager {
 public:
@@ -14,8 +16,8 @@ public:
 
     void upgrade_ship();
     void repair_ship();
-    void equip_weapon(int weapon_damage);
     void show_info();
+
 };
 
 #endif 

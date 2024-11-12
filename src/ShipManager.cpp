@@ -1,4 +1,5 @@
 #include "ShipManager.h"
+#include "InventoryManager.h"
 #include <iostream>
 
 ShipManager::ShipManager() : storage_capacity(100), currentHealth(100), damage(50), maxHealth(100) {}
@@ -12,11 +13,6 @@ void ShipManager::upgrade_ship() {
 void ShipManager::repair_ship() {
     currentHealth = maxHealth;
     std::cout << "\n\nShip fully repaired!\n";
-}
-
-void ShipManager::equip_weapon(int weapon_damage) {
-    damage += weapon_damage;
-    std::cout << "\n\nNew weapon equipped! Damage: " << damage << "\n";
 }
 
 void ShipManager::show_info() {

@@ -1,5 +1,7 @@
 #include "ShipMenu.h"
 #include "Utils.h"
+#include "ShipManager.h"
+#include "InventoryManager.h"
 #include <iostream>
 
 void ship_menu(Player& player) {
@@ -8,12 +10,14 @@ void ship_menu(Player& player) {
     int choice = 0;
 
     do {
+        clearScreen();
         std::cout << "\nShip Menu:\n";
         std::cout << "1. Ship information \n";
         std::cout << "2. Upgrade ship\n";
         std::cout << "3. Repair ship\n";
         std::cout << "4. Equip weapon\n";
-        std::cout << "5. Exit ship menu\n";
+        std::cout << "5. Unequip weapon\n";
+        std::cout << "6. Exit ship menu\n";
         std::cout << "\nChoose an option: ";
         std::cin >> choice;
         clearScreen();
@@ -50,7 +54,7 @@ void ship_menu(Player& player) {
             case 3: {
                 std::string answer;
                 if (player.ship->maxHealth == player.ship->currentHealth){
-                    std::cout << "Your ship is already fully repaired.";
+                    std::cout << "Your ship is already fully repaired.\n";
                 } else {
                     std::cout << "Would you like to repair your ship? (100 gold) [Y/N]: ";
                     std::cin >> answer;
@@ -71,10 +75,29 @@ void ship_menu(Player& player) {
                 break;
             }
 
-            case 4:
-                break;
+            case 4: {
+                player.inventory->show_inventory();
+                std::cout << "\nEnter the index of the weapon to equip (or -1 to cancel): ";
+                int index;
+                std::cin >> index;
 
-            case 5:
+                if (index == -1) {
+                    std::cout << "Equip action canceled.\n";
+                    waitForKeypress();
+                    clearScreen();
+                    break;
+                }
+
+                player.inventory->equip_weapon_by_index(static_cast<size_t>(index), player.ship->damage);
+                break;
+            }
+
+            case 5: {
+                player.inventory->unequip_weapon(player.ship->damage);
+                break;
+            }
+
+            case 6:
                 std::cout << "Exiting...\n";
                 clearScreen();
                 break;
@@ -84,5 +107,5 @@ void ship_menu(Player& player) {
                 clearScreen();
                 break;
         }
-    } while (choice != 5);
+    } while (choice != 6);
 }

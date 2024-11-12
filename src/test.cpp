@@ -8,6 +8,7 @@
 #include "MainMenu.h"
 #include "test.h"
 #include "Utils.h"
+#include "Weapon.h"
 
 void suppressOutput(std::ostream& stream, std::ostream& backup, std::streambuf*& originalBuffer) {
     originalBuffer = stream.rdbuf();
@@ -53,10 +54,7 @@ void testShipManager() {
     assert(ship.currentHealth == 125);
 
     ship.repair_ship();
-    assert(ship.currentHealth == 125); 
-
-    ship.equip_weapon(20);
-    assert(ship.damage == 70);
+    assert(ship.currentHealth == 125);
 }
 
 void testInventoryManager() {
@@ -64,14 +62,14 @@ void testInventoryManager() {
 
     assert(inventory.items.empty());
 
-    inventory.add_item("Laser Gun", "Weapon");
+    inventory.add_item(Weapon("Laser Gun", 20, "Rare"));
     assert(!inventory.items.empty());
 
     inventory.sell_item("Laser Gun");
     assert(inventory.items.empty());
 
-    inventory.add_item("Plasma Shield", "Armor");
-    inventory.add_item("Nano Medkit", "Medical");
+    inventory.add_item(Weapon("Laser Gun", 20, "Rare"));
+    inventory.add_item(Weapon("Laser Gun", 20, "Rare"));
 
     assert(inventory.items.size() == 2);
     assert(inventory.can_trade());
