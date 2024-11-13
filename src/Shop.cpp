@@ -21,7 +21,7 @@ void resetShopInventory(const std::vector<Buff>& buffs) {
     std::vector<bool> selected(buffs.size(), false);
     srand(static_cast<unsigned int>(time(0)));
 
-    for (int i = 0; i < 5 && i < buffs.size(); ++i) {
+    for (int i = 0; i < 3 && i < buffs.size(); ++i) {
         int index;
         do {
             index = rand() % buffs.size();
@@ -38,7 +38,7 @@ void runShop(Player& player, const std::vector<Buff>& buffs) {
     resetShopInventory(buffs);
 
     // Check if the player has exceeded the visit limit
-    if (player.visitCounter >= 3) {
+    if (player.visitCounter >= 2) {
         std::cout << "The shop is closed. Come back later!\n";
         return;
     }

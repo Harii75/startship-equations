@@ -31,7 +31,6 @@ void tradeMenu(Player& player, const std::vector<Buff>& buffs) {
         switch (choice) {
             case 1:
                 clearScreen();
-                // Display inventory with selling prices
                 if (player.inventory->can_trade()) {
                     for (size_t i = 0; i < player.inventory->items.size(); ++i) {
                         const Weapon& weapon = player.inventory->items[i];

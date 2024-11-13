@@ -99,7 +99,7 @@ void game_menu(Player& player) {
                 break;
             case 2:
                 clearScreen();
-                std::cout << "Exploring the unknown..\n";
+                std::cout << "Exploring the unknown..\n\n";
                 randomScenario(player, weapons);
                 waitForKeypress();
                 break;
