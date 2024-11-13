@@ -2,6 +2,7 @@
 #include "Utils.h"
 #include "Combat.h"
 #include <iostream>
+#include "Shop.h"
 
 void game_progression(Player& player, const std::vector<Stage>& stages, size_t& currentStage, size_t& currentLevel) {
     if (player.currentStage >= stages.size()) {
@@ -46,6 +47,7 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
                 player.currentLevel = levelIndex + 1;
                 clearScreen();
                 std::cout << "Returning to the main menu...\n";
+                player.visitCounter = 0;
                 return;
             }
         }

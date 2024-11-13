@@ -2,7 +2,7 @@
 #include <iostream>
 
 Player::Player(const std::string& name) 
-    : name(name), gold(500), level(1), xp(0), xpTreshold(240), knowledge(0) {
+    : name(name), gold(500), level(1), xp(0), xpTreshold(240), knowledge(0), lastShopResetLevel(0) {
     ship = new ShipManager();
     inventory = new InventoryManager();
 }
@@ -22,19 +22,6 @@ void Player::display_stats() {
     std::cout << "######################################################\n";
 }
 
-int Player::calculateDamage(int correctAnswer, int playerAnswer) {
-    int difference = std::abs(correctAnswer - playerAnswer);
-    if (difference == 0) {
-        return ship->damage * 2;
-    } else if (difference <= 2) {
-        return ship->damage;
-    } else if (difference <= 5) {
-        return ship->damage / 2;
-    } else {
-        return 0;
-    }
-}
-
 void Player::levelUp(int& points) {
     if (points >= xpTreshold) {
         points -= xpTreshold;
@@ -46,4 +33,27 @@ void Player::levelUp(int& points) {
 
 void Player::canPlayerTrade() {
     canTrade = (currentLevel % 5 == 0);
+}
+
+bool Player::shouldResetShop() {
+    if ((currentLevel == 1 || currentLevel == 9) && currentLevel > lastShopResetLevel) {
+        lastShopResetLevel = currentLevel;  
+        return true; 
+    }
+    return false;  
+}
+
+
+
+int Player::calculateDamage(int correctAnswer, int playerAnswer) {
+    int difference = std::abs(correctAnswer - playerAnswer);
+    if (difference == 0) {
+        return ship->damage * 2;
+    } else if (difference <= 2) {
+        return ship->damage;
+    } else if (difference <= 5) {
+        return ship->damage / 2;
+    } else {
+        return 0;
+    }
 }
