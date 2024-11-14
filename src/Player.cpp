@@ -14,7 +14,7 @@ Player::~Player() {
 
 void Player::display_stats() {
     std::cout << "\n######################################################\n";
-    std::cout << "                 Captain: " << name << "             \n";
+    std::cout << "                 Captain: " << name << "\n";
     std::cout << "   Gold: " << gold << "\t\t\tLevel: " << level << "   XP: " << xp << "/" << xpTreshold <<  "\n";
     std::cout << "   Damage: " << ship->damage <<  "\t\t\tHealth: " << ship->currentHealth <<"/" << ship->maxHealth << "\n";
     std::cout << "   Stage: [ " << currentStage+1 << " - " << currentLevel+1 << " ]\t\tKnowledge: " << knowledge << " \n";
@@ -55,5 +55,12 @@ int Player::calculateDamage(int correctAnswer, int playerAnswer) {
         return ship->damage / 2;
     } else {
         return 0;
+    }
+}
+
+void Player::listBuffs() const {
+    std::cout << "Active buffs:\n";
+    for (const auto& buff : purchasedBuffs) {
+        std::cout << "Buff: " << buff.name << " - Duration: " << buff.duration << " rounds\n";
     }
 }

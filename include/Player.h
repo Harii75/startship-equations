@@ -4,6 +4,7 @@
 #include <string>
 #include "ShipManager.h"
 #include "InventoryManager.h"
+#include "Buff.h"
 
 class Player {
 public:
@@ -27,13 +28,17 @@ public:
     int highscore = 0;
     bool canTrade;
     int visitCounter = 0;
-
+    std::vector<Buff> purchasedBuffs;
 
     void display_stats();
     int calculateDamage(int correctAnswer, int playerAnswer);
     void levelUp(int& points);
     void canPlayerTrade();
     bool shouldResetShop();
+    void addPurchasedBuff(const Buff& buff) {
+        purchasedBuffs.push_back(buff);
+    };
+    void listBuffs() const;
 };
 
 #endif 

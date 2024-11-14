@@ -22,9 +22,7 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
                 Enemy enemyCopy = enemy;
                 fight(player, enemyCopy);
             }
-            waitForKeypress();
-            clearScreen();
-
+            
             player.gold += level.rewards.gold;
             player.xp += level.rewards.xp;
             std::cout << "\nLevel Completed!\n";
@@ -32,8 +30,6 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
 
             player.levelUp(player.xp);
 
-            waitForKeypress();
-            clearScreen();
 
             char choice;
             std::cout << "Choose an option:\n";
@@ -41,6 +37,8 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
             std::cout << "2. Return to the main menu\n";
             std::cout << "\nEnter your choice: ";
             std::cin >> choice;
+            waitForKeypress();
+            clearScreen();
 
             if (choice == '2') {
                 player.currentStage = stageIndex;
@@ -51,11 +49,10 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
                 return;
             }
         }
-
+        clearScreen();
         player.currentLevel = 0;
         std::cout << "Stage " << stage.name << " completed!\n";
         waitForKeypress();
-        clearScreen();
     }
 
     std::cout << "Congratulations! You've completed all stages!\n";

@@ -36,13 +36,12 @@ void fight(Player& player, Enemy& enemy) {
         if (enemy.health < 0) enemy.health = 0;
 
         // Show attack result and enemy's remaining health
-        clearScreen();
         std::cout << "You dealt " << inflictedDamage << " damage to the enemy!";
         std::cout << " Enemy health: " << enemy.health << std::endl;
 
         // Enemy's turn to attack if still alive
         if (enemy.health > 0) {
-            int enemyDamage = rand() % 10 + 5;  // Random enemy damage
+            int enemyDamage = enemy.damage;
             player.ship->currentHealth -= enemyDamage;
             loadingEffect(5, "\nEnemy's turn to attack!");
             std::cout << "\nThe enemy dealt " << enemyDamage << " damage to you!";

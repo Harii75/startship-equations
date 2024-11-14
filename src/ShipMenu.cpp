@@ -26,6 +26,7 @@ void ship_menu(Player& player) {
                 std::cout << "Displaying ship information...\n\n";
                 player.ship->show_info();
                 std::cout << "\n";
+                player.listBuffs();
                 waitForKeypress();
                 clearScreen();
                 break;

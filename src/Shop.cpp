@@ -8,7 +8,6 @@
 
 std::vector<std::pair<Buff, int>> shopInventory;
 
-
 int calculateBuffPrice(const Buff& buff) {
     std::hash<std::string> hash_fn;
     size_t hash = hash_fn(buff.name);
@@ -75,8 +74,9 @@ void runShop(Player& player, const std::vector<Buff>& buffs) {
             int price = shopInventory[choice - 1].second;
             if (player.gold >= price) {
                 player.gold -= price;  // Deduct gold
-                std::cout << "You bought " << shopInventory[choice - 1].first.name
-                          << " for " << price << " gold!\n";
+                Buff purchasedBuff = shopInventory[choice - 1].first;
+                player.addPurchasedBuff(purchasedBuff);  // Add buff to player's purchased buffs
+                std::cout << "You bought " << purchasedBuff.name << " for " << price << " gold!\n";
                 waitForKeypress();
                 shopInventory.erase(shopInventory.begin() + (choice - 1));  // Remove item from shop
             } else {
