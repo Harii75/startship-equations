@@ -12,6 +12,7 @@
 #include "TradeMenu.h"
 #include "Player.h"
 #include "test.h"
+#include "HighScore.h"
 #include <cassert>
 #include <iostream>
 #include <limits>
@@ -52,7 +53,7 @@ void main_menu() {
             }
             case 2:
                 clearScreen();
-                std::cout << "Not available. Check Later\n";
+                displayTop10HighScores();
                 waitForKeypress();
                 break;
             case 3:

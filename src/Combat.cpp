@@ -40,7 +40,7 @@ void fight(Player& player, Enemy& enemy) {
 
         // Loop until the player provides a valid input
         do {
-            // Display equation to player
+            clearScreen();
             std::cout << "\nSolve this equation to attack: " << num1 << " " << operation << " " << num2 << " = ";
             
             if (!(std::cin >> playerAnswer)) {

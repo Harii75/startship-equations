@@ -69,7 +69,7 @@ void displayTop10HighScores() {
     });
 
     // Display the top 10 high scores
-    std::cout << "\nTop 10 High Scores:\n";
+    std::cout << "Top 10 High Scores:\n\n";
     int count = 0;
     for (const auto& entry : highScores) {
         std::cout << count + 1 << ". " << entry.name << ": " << entry.score << "\n";

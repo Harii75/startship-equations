@@ -13,7 +13,6 @@ public:
 
     float accuracy = 1.0;
     int calculation_time = 30;
-    int knowledge_points = 0;
     int lastShopResetLevel;
     std::string name;
     int gold;
