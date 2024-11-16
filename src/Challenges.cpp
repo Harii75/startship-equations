@@ -1,4 +1,5 @@
 #include "Challenges.h"
+#include "HighScore.h"
 #include "Utils.h"
 #include <chrono>
 #include <thread>
@@ -48,7 +49,8 @@ void asteroidCollisionChallenge(Player& player) {
 
         if (player.ship->currentHealth <= 0) {
             std::cout << "\nYour couldn't avoid the asteroids. \nYour ship has fallen to pieces.\n";
-            //endgame function
+            addHighScore(player.name, player.highscore);
+            endGame(player);
             break;
         }
     }
@@ -61,12 +63,15 @@ void asteroidCollisionChallenge(Player& player) {
             break;
         case 1:
             std::cout << "You did you best, your left wing fully fell off.";
+            player.highscore += 5;
             break;
         case 2:
             std::cout << "Well done! Survived the asteroid collosion with minimal damage.";
+            player.highscore += 10;
             break;
         default:
             std::cout << "Perfect steering captain! You saved the day!";
+            player.highscore += 20;
             break;
     }
     std::cout << "\nChallenge complete. Player health: " << player.ship->currentHealth << std::endl;

@@ -3,6 +3,8 @@
 #include "ShipManager.h"
 #include "InventoryManager.h"
 #include <iostream>
+#include <limits>
+
 
 void ship_menu(Player& player) {
     int upgradeCost = 150;
@@ -19,7 +21,14 @@ void ship_menu(Player& player) {
         std::cout << "5. Unequip weapon\n";
         std::cout << "6. Exit ship menu\n";
         std::cout << "\nChoose an option: ";
-        std::cin >> choice;
+
+        if (!(std::cin >> choice)) {
+            std::cin.clear(); 
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
+            std::cout << "Invalid input. Please enter a number.\n";
+            continue;
+        }
+
         clearScreen();
         switch (choice) {
             case 1:
@@ -106,6 +115,7 @@ void ship_menu(Player& player) {
             default:
                 std::cout << "Invalid choice, please try again.\n";
                 clearScreen();
+                ship_menu(player);
                 break;
         }
     } while (choice != 6);

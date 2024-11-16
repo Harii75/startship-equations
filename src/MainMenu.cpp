@@ -14,6 +14,7 @@
 #include "test.h"
 #include <cassert>
 #include <iostream>
+#include <limits>
 
 void main_menu() {
     clearScreen();
@@ -26,7 +27,13 @@ void main_menu() {
         std::cout << "3. Test\n";
         std::cout << "4. Exit\n";
         std::cout << "\nChoose an option: ";
-        std::cin >> choice;
+
+        if (!(std::cin >> choice)) {
+            std::cin.clear(); 
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid input. Please enter a number.\n";
+            continue;
+        }
 
         switch (choice) {
             case 1: {
@@ -57,11 +64,12 @@ void main_menu() {
                 std::cout << "Exit...\n";
                 break;
             default:
+                std::cout << "Invalid choice, please try again.\n";
                 clearScreen();
-                std::cout << "Invalid input, try again.\n";
+                main_menu();
                 break;
         }
-    } while (choice != 3);
+    } while (choice != 4);
 }
 
 void game_menu(Player& player) {
@@ -88,7 +96,13 @@ void game_menu(Player& player) {
         std::cout << "5. Trade\n";
         std::cout << "6. Exit\n";
         std::cout << "\nChoose an option: ";
-        std::cin >> choice;
+
+        if (!(std::cin >> choice)) {
+            std::cin.clear(); 
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cout << "Invalid input. Please enter a number.\n";
+            continue;
+        }
 
         switch (choice) {
             case 1:
@@ -124,6 +138,8 @@ void game_menu(Player& player) {
                 break;
             default:
                 std::cout << "Invalid choice, please try again.\n";
+                clearScreen();
+                game_menu(player);
                 break;
         }
     } while (choice != 6);

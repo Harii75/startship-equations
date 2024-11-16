@@ -1,6 +1,7 @@
 #include "GameProgression.h"
 #include "Utils.h"
 #include "Combat.h"
+#include "HighScore.h"
 #include <iostream>
 #include "Shop.h"
 
@@ -56,4 +57,7 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
     }
 
     std::cout << "Congratulations! You've completed all stages!\n";
+    waitForKeypress();
+    addHighScore(player.name, player.highscore);
+    finishGame(player);
 }
