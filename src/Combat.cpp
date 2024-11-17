@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <cmath>
+#include <limits>
 
 void generateEquation(int &num1, int &num2, char &operation, int &correctAnswer) {
     num1 = rand() % 20 + 1;
