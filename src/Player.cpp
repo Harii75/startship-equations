@@ -59,8 +59,8 @@ int Player::calculateDamage(int correctAnswer, int playerAnswer) {
 }
 
 void Player::listBuffs() const {
-    std::cout << "Active buffs:\n";
+    std::cout << "Active buff(s):\n";
     for (const auto& buff : purchasedBuffs) {
-        std::cout << "Buff: " << buff.name << " - Duration: " << buff.duration << " rounds\n";
+        std::cout << buff.name << " - Duration: " << buff.duration << " rounds\n";
     }
 }

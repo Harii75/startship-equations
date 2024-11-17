@@ -43,20 +43,14 @@ void fight(Player& player, Enemy& enemy) {
         do {
             clearScreen();
             std::cout << "\nSolve this equation to attack: " << num1 << " " << operation << " " << num2 << " = ";
-            
+
             if (!(std::cin >> playerAnswer)) {
                 std::cin.clear(); // Clear the error flag
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Discard invalid input
                 std::cout << "Invalid input. Please enter a valid number.\n";
-                continue; // Prompt the same equation again
+            } else {
+                correctInput = true; // Input is valid, break the loop
             }
-
-            // Check if the answer is correct
-            correctInput = (playerAnswer == correctAnswer);
-            if (!correctInput) {
-                std::cout << "Incorrect answer. Try again.\n";
-            }
-
         } while (!correctInput);
 
         // Calculate inflicted damage based on answer accuracy

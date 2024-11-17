@@ -26,7 +26,7 @@ void main_menu() {
         std::cout << "1. New Game\n";
         std::cout << "2. Leaderboard\n";
         std::cout << "3. Test\n";
-        std::cout << "4. Exit\n";
+        std::cout << "4. Exit to desktop\n";
         std::cout << "\nChoose an option: ";
 
         if (!(std::cin >> choice)) {
@@ -95,7 +95,7 @@ void game_menu(Player& player) {
         std::cout << "3. Ship\n";
         std::cout << "4. Inventory\n";
         std::cout << "5. Trade\n";
-        std::cout << "6. Exit\n";
+        std::cout << "6. Exit to desktop\n";
         std::cout << "\nChoose an option: ";
 
         if (!(std::cin >> choice)) {
@@ -135,8 +135,23 @@ void game_menu(Player& player) {
                 break;
             case 6:
                 clearScreen();
-                std::cout << "Exiting...\n";
-                break;
+                char exitChoice;
+                std::cout << "Are you sure you want to exit? [Y/N]: ";
+                std::cin >> exitChoice;
+
+                // Convert exitChoice to uppercase to handle both Y and y
+                exitChoice = toupper(exitChoice);
+
+                if (exitChoice == 'Y') {
+                    std::cout << "Exiting...\n";
+                    waitForKeypress();
+                    exit(0);
+                } else {
+                    std::cout << "Returning to menu...\n";
+                    waitForKeypress();
+                    game_menu(player);
+                    break; 
+                }
             default:
                 std::cout << "Invalid choice, please try again.\n";
                 clearScreen();

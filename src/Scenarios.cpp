@@ -30,7 +30,7 @@ void randomScenario(Player& player, const std::vector<Weapon>& weapons) {
         case 4: {
             std::cout << "You encounter an enemy bandit ship!\n";
             Enemy darkShip;
-            darkShip.damage = 100;//10 * player.currentStage + 1;
+            darkShip.damage = 10 * player.currentStage + 1;
             darkShip.health = 100 * (player.currentStage + 1) / 2;
             darkShip.type = "Bandits";
 

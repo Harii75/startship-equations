@@ -58,9 +58,9 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
 
                 // Ask the player whether to continue or return to the main menu
                 char choice;
-                std::cout << "Choose an option:\n";
+                std::cout << "\nChoose an option:\n";
                 std::cout << "1. Continue to the next level\n";
-                std::cout << "2. Return to the main menu\n";
+                std::cout << "2. Return to the main menu\n\n";
                 std::cout << "Enter your choice: ";
                 std::cin >> choice;
                 waitForKeypress();

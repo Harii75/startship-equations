@@ -32,10 +32,23 @@ void ship_menu(Player& player) {
         clearScreen();
         switch (choice) {
             case 1:
-                std::cout << "Displaying ship information...\n\n";
-                player.ship->show_info();
+                std::cout << "Displaying ship information...\n\n";                
+                if (player.inventory->hasEquippedWeapon) {
+                    const auto& weapon = player.inventory->equippedWeapon;
+                    std::cout << "Weapon: " << weapon.name 
+                            << " (+" << weapon.damage << " damage)\n\n";
+                } else {
+                    std::cout << "Weapon: None\n\n";}
+
+                player.ship->show_info(); 
                 std::cout << "\n";
-                player.listBuffs();
+                if (player.purchasedBuffs.size() == 0){
+                    std::cout << "No active buffs";
+                }
+                else{                    
+                    player.listBuffs();
+                }
+                
                 waitForKeypress();
                 clearScreen();
                 break;
@@ -50,7 +63,6 @@ void ship_menu(Player& player) {
                         loadingEffect(5,"\nUpgrading your ship");
                         player.ship->upgrade_ship();
                         std::cout << "Remaining gold: " << player.gold << "\n";
-                        waitForKeypress();
                     } else {
                         std::cout << "\nYou don't have enough gold (150 required).\n";
                     }
@@ -74,7 +86,6 @@ void ship_menu(Player& player) {
                             loadingEffect(5,"\nRepairing your ship");
                             player.ship->repair_ship();
                             std::cout << "Remaining gold: " << player.gold << "\n";
-                            waitForKeypress();
                         } else {
                             std::cout << "\nYou don't have enough gold (100 required).\n";
                         }
