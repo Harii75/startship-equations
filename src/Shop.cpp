@@ -6,6 +6,7 @@
 #include <functional>
 #include <iostream>
 #include <limits>
+#include <ctime>
 
 
 std::vector<std::pair<Buff, int>> shopInventory;
