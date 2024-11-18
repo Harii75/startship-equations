@@ -1,5 +1,5 @@
 # Use a lightweight Windows or Linux base image
-FROM mcr.microsoft.com/windows/nanoserver:ltsc2022
+FROM mcr.microsoft.com/windows/nanoserver:ltsc2019
 
 # Set working directory
 WORKDIR /app
