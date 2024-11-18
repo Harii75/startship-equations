@@ -19,10 +19,10 @@ jobs:
       - name: Install dependencies
         run: |
           choco install mingw -y
-          set PATH=C:\tools\mingw64\bin;%PATH%
+          $env:PATH = "C:\tools\mingw64\bin;" + $env:PATH
 
       - name: Build the game
         run: g++ -Iinclude -Ilib -o startship.exe src/*.cpp lib/tinyxml2.cpp
 
       - name: Test the build
-        run: startship.exe || echo "Run failed, continuing for debugging purposes"
+        run: .\startship.exe || echo "Run failed, continuing for debugging purposes"
