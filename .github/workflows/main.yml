@@ -16,8 +16,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install -y g++ gcc-multilib
+  - name: Install dependencies
+    run: |
+      sudo apt-get update
+      sudo apt-get install -y g++ gcc-multilib g++-multilib libstdc++-12-dev libstdc++-12-dev:i386
+
 
     - name: Build the game
       run: |
