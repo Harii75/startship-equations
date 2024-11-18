@@ -23,6 +23,3 @@ jobs:
 
       - name: Build the game
         run: g++ -Iinclude -Ilib -o startship.exe src/*.cpp lib/tinyxml2.cpp
-
-      - name: Test the build
-        run: .\startship.exe || echo "Run failed, continuing for debugging purposes"
