@@ -1,4 +1,4 @@
-name: Build C++ Game
+name: Build C++ Game on Windows
 
 on:
   push:
@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -18,12 +18,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y g++ gcc-multilib g++-multilib libc6-dev-i386
+          choco install mingw -y
+          set PATH=C:\tools\mingw64\bin;%PATH%
 
       - name: Build the game
-        run: |
-          g++ -m32 -Iinclude -Ilib -o startship src/*.cpp lib/tinyxml2.cpp
+        run: g++ -Iinclude -Ilib -o startship.exe src/*.cpp lib/tinyxml2.cpp
 
       - name: Test the build
-        run: ./startship || echo "Run failed, continuing for debugging purposes"
+        run: startship.exe || echo "Run failed, continuing for debugging purposes"
