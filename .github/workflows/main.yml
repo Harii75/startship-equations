@@ -13,17 +13,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y g++ gcc-multilib g++-multilib libstdc++-12-dev libstdc++-12-dev:i386
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y g++ gcc-multilib g++-multilib libc6-dev-i386
 
-    - name: Build the game
-      run: |
-        g++ -m32 -Iinclude -Ilib -o my_game src/*.cpp lib/tinyxml2.cpp
+      - name: Build the game
+        run: |
+          g++ -m32 -Iinclude -Ilib -o startship src/*.cpp lib/tinyxml2.cpp
 
-    - name: Test the build
-      run: ./my_game || echo "Run failed, continuing for debugging purposes"
+      - name: Test the build
+        run: ./startship || echo "Run failed, continuing for debugging purposes"
