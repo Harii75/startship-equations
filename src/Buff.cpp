@@ -6,11 +6,11 @@ void applyBuff(Player& player, const Buff& buff) {
     if (buff.name == "Calculation Focus") {
         std::cout << "Buff applied: Calculation Focus - Increases accuracy of calculations by 10% for 3 rounds.\n";
     } else if (buff.name == "Quick Reflexes") {
-        std::cout << "Buff applied: Quick Reflexes - Increases calculation time by 10 seconds for 3 rounds.\n";
+        std::cout << "Buff applied: Quick Reflexes - Increases calculation accuracy seconds for 3 rounds.\n";
     } else if (buff.name == "Math Mastery") {
-        std::cout << "Buff applied: Math Mastery - Boosts points gained from successful calculations by 20% for 3 rounds.\n";
+        std::cout << "Buff applied: Math Mastery - Boosts knowledge points gained from scenarios by 50% for 3 rounds.\n";
     } else if (buff.name == "Adaptive Learning") {
-        std::cout << "Buff applied: Adaptive Learning - Reduces penalties for incorrect calculations by 50% for 3 rounds.\n";
+        std::cout << "Buff applied: Adaptive Learning - Reduces penalties for incorrect calculations for 3 rounds.\n";
     } else if (buff.name == "Enhanced Logic") {
         std::cout << "Buff applied: Enhanced Logic - Improves calculation efficiency, granting an additional 5 points for each correct answer for 3 rounds.\n";
     } else if (buff.name == "Mathematical Intuition") {

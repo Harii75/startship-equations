@@ -13,6 +13,7 @@
 #include "Player.h"
 #include "test.h"
 #include "HighScore.h"
+#include "InteractNPC.h"
 #include <cassert>
 #include <iostream>
 #include <limits>
@@ -77,9 +78,9 @@ void game_menu(Player& player) {
     int choice = 0;
 
     // Load game data using FileLoader
-    std::vector<Weapon> weapons = FileLoader::loadWeaponsFromXML("data/weapons.xml");
-    std::vector<Stage> stages = FileLoader::loadStagesFromXML("data/levels.xml");
     std::vector<NPC> npcs = FileLoader::loadNpcsFromXML("data/npc.xml");
+    std::vector<Weapon> weapons = FileLoader::loadWeaponsFromXML("data/weapons.xml");
+    std::vector<Stage> stages = FileLoader::loadStagesFromXML("data/levels.xml");   
     std::vector<Buff> buffs = FileLoader::loadBuffsFromXML("data/buffs.xml");
 
     // Add random items to the player's inventory
@@ -115,7 +116,7 @@ void game_menu(Player& player) {
             case 2:
                 clearScreen();
                 std::cout << "Exploring the unknown..\n\n";
-                randomScenario(player, weapons);
+                randomScenario(player, weapons,npcs);
                 waitForKeypress();
                 break;
             case 3:

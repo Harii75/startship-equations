@@ -68,7 +68,7 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
 
                 if (choice == '2') {
                     player.currentStage = stageIndex;
-                    player.currentLevel = levelIndex + 1; // Save progress at the next level
+                    player.currentLevel = levelIndex + 1; 
                     std::cout << "Returning to the main menu...\n";
                     player.visitCounter = 0;
                     game_menu(player); // Redirect to the main menu
@@ -77,9 +77,9 @@ void game_progression(Player& player, const std::vector<Stage>& stages, size_t& 
             }
         }
 
-        // Clear the current level when the stage is completed
         clearScreen();
         player.currentLevel = 0;
+        player.currentStage += 1;
         std::cout << "Stage " << stage.name << " completed!\n";
         waitForKeypress();
     }

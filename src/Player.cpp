@@ -2,7 +2,7 @@
 #include <iostream>
 
 Player::Player(const std::string& name) 
-    : name(name), gold(500), level(1), xp(0), xpTreshold(240), knowledge(0), lastShopResetLevel(0) {
+    : name(name), gold(500), level(1), xp(0), xpTreshold(240), knowledge(100), lastShopResetLevel(0) {
     ship = new ShipManager();
     inventory = new InventoryManager();
 }
@@ -20,7 +20,7 @@ void Player::display_stats() {
     std::cout << "   Stage: [ " << currentStage+1 << " - " << currentLevel+1 << " ]\t\tKnowledge: " << knowledge << " \n";
     std::cout << "                    Score: " << highscore << " \n";
     std::cout << "######################################################\n";
-}
+}   
 
 void Player::levelUp(int& points) {
     if (points >= xpTreshold) {
@@ -28,6 +28,10 @@ void Player::levelUp(int& points) {
         xpTreshold = static_cast<int>(xpTreshold * 1.75);
         level++;
         std::cout << "Congratulations! You've reached level " << level << "!\n";
+        std::cout << "You've got 25 gold!\n";
+        gold+=25;
+        ship->maxHealth = ship->maxHealth*1.12;
+        ship->currentHealth = ship->currentHealth*1.12;
     }
 }
 

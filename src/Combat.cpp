@@ -83,7 +83,8 @@ void fight(Player& player, Enemy& enemy) {
 
         // Enemy's turn to attack if still alive
         if (enemy.health > 0) {
-            int enemyDamage = enemy.damage;
+            std::srand(std::time(0));
+            int enemyDamage = (std::rand() % enemy.damage) + 1;
             player.ship->currentHealth -= enemyDamage;
             loadingEffect(5, "\nEnemy's turn to attack!");
             std::cout << "\nThe enemy dealt " << enemyDamage << " damage to you!";

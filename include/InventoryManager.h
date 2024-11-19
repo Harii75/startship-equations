@@ -25,6 +25,8 @@ public:
     bool unequip_weapon(int& playerDamage);
     void list_inventory();
     const Weapon& get_item(size_t index);
+    std::vector<Weapon> filterWeaponsByRarity(const std::vector<Weapon>& weapons, const std::string& rarity);
+    Weapon getRandomWeapon(const std::vector<Weapon>& filteredWeapons);
 };
 
 #endif

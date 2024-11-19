@@ -1,13 +1,15 @@
 #include "Scenarios.h"
 #include "Utils.h"
 #include "Combat.h"
+#include "FileLoader.h"
+#include "InteractNPC.h"
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
 
-void randomScenario(Player& player, const std::vector<Weapon>& weapons) {    
+void randomScenario(Player& player, const std::vector<Weapon>& weapons, const std::vector<NPC>& npcs) { 
     std::srand(static_cast<unsigned int>(std::time(0)));
-    int scenario = std::rand() % 4 + 1;
+    int scenario = std::rand() % 5 + 1;
 
     switch (scenario) {
         case 1:
@@ -40,6 +42,10 @@ void randomScenario(Player& player, const std::vector<Weapon>& weapons) {
             player.knowledge += 6;
             break;
         }
+        case 5:
+            std::cout << "You've a mysterious ship, and it has a quest for you.";
+            interactWithNPC(npcs, weapons, *player.inventory, player.currentStage);
+            break;
         default:
             std::cout << "Unknown scenario.\n";
             break;

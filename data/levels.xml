@@ -22,7 +22,7 @@
                         <xp>30</xp>
                     </rewards>
                     <conditions>
-                        <condition>10</condition> <!-- 1*10*1 + 0 -->
+                        <condition>10</condition>
                     </conditions>
                 </level>
 
@@ -41,7 +41,7 @@
                         <xp>60</xp>
                     </rewards>
                     <conditions>
-                        <condition>20</condition> <!-- 1*10*2 + 0 -->
+                        <condition>20</condition> 
                     </conditions>
                 </level>
 
@@ -60,7 +60,7 @@
                         <xp>90</xp>
                     </rewards>
                     <conditions>
-                        <condition>30</condition> <!-- 1*10*3 + 0 -->
+                        <condition>30</condition> 
                     </conditions>
                 </level>
 
@@ -79,7 +79,7 @@
                         <xp>120</xp>
                     </rewards>
                     <conditions>
-                        <condition>40</condition> <!-- 1*10*4 + 0 -->
+                        <condition>40</condition> 
                     </conditions>
                 </level>
 
@@ -98,7 +98,7 @@
                         <xp>150</xp>
                     </rewards>
                     <conditions>
-                        <condition>50</condition> <!-- 1*10*5 + 0 -->
+                        <condition>50</condition> 
                     </conditions>
                 </level>
 
@@ -117,7 +117,7 @@
                         <xp>180</xp>
                     </rewards>
                     <conditions>
-                        <condition>60</condition> <!-- 1*10*6 + 0 -->
+                        <condition>60</condition> 
                     </conditions>
                 </level>
 
@@ -136,7 +136,7 @@
                         <xp>220</xp>
                     </rewards>
                     <conditions>
-                        <condition>70</condition> <!-- 1*10*7 + 0 -->
+                        <condition>70</condition> 
                     </conditions>
                 </level>
 
@@ -155,7 +155,7 @@
                         <xp>300</xp>
                     </rewards>
                     <conditions>
-                        <condition>80</condition> <!-- 1*10*8 + 0 -->
+                        <condition>80</condition> 
                     </conditions>
                 </level>
 
@@ -174,7 +174,7 @@
                         <xp>350</xp>
                     </rewards>
                     <conditions>
-                        <condition>90</condition> <!-- 1*10*9 + 0 -->
+                        <condition>90</condition> 
                     </conditions>
                 </level>
 
@@ -185,7 +185,7 @@
                         <enemy>
                             <type>Ultimate Polygon</type>
                             <health>100</health>
-                            <damage>35</damage>
+                            <damage>55</damage>
                         </enemy>
                     </enemies>
                     <rewards>
@@ -194,7 +194,7 @@
                         <special_item>Polygon Shield</special_item>
                     </rewards>
                     <conditions>
-                        <condition>100</condition> <!-- 1*10*10 + 0 -->
+                        <condition>100</condition> 
                     </conditions>
                 </level>
             </levels>
@@ -222,7 +222,7 @@
                         <xp>100</xp>
                     </rewards>
                     <conditions>
-                        <condition>110</condition> <!-- 2*10*1 + (1*10*10) -->
+                        <condition>110</condition>
                     </conditions>
                 </level>
 
@@ -241,7 +241,7 @@
                         <xp>150</xp>
                     </rewards>
                     <conditions>
-                        <condition>120</condition> <!-- 2*10*2 + (1*10*10) -->
+                        <condition>120</condition> 
                     </conditions>
                 </level>
 
@@ -260,7 +260,7 @@
                         <xp>200</xp>
                     </rewards>
                     <conditions>
-                        <condition>130</condition> <!-- 2*10*3 + (1*10*10) -->
+                        <condition>130</condition> 
                     </conditions>
                 </level>
 
@@ -279,7 +279,7 @@
                         <xp>250</xp>
                     </rewards>
                     <conditions>
-                        <condition>140</condition> <!-- 2*10*4 + (1*10*10) -->
+                        <condition>140</condition> 
                     </conditions>
                 </level>
 
@@ -298,7 +298,7 @@
                         <xp>300</xp>
                     </rewards>
                     <conditions>
-                        <condition>150</condition> <!-- 2*10*5 + (1*10*10) -->
+                        <condition>150</condition> 
                     </conditions>
                 </level>
 
@@ -317,7 +317,7 @@
                         <xp>400</xp>
                     </rewards>
                     <conditions>
-                        <condition>160</condition> <!-- 2*10*6 + (1*10*10) -->
+                        <condition>160</condition> 
                     </conditions>
                 </level>
 
@@ -336,7 +336,7 @@
                         <xp>500</xp>
                     </rewards>
                     <conditions>
-                        <condition>170</condition> <!-- 2*10*7 + (1*10*10) -->
+                        <condition>170</condition> 
                     </conditions>
                 </level>
 
@@ -347,7 +347,7 @@
                         <enemy>
                             <type>Final Labyrinth Guardian</type>
                             <health>120</health>
-                            <damage>30</damage>
+                            <damage>65</damage>
                         </enemy>
                     </enemies>
                     <rewards>
@@ -356,7 +356,7 @@
                         <special_item>Labyrinth Key</special_item>
                     </rewards>
                     <conditions>
-                        <condition>180</condition> <!-- 2*10*8 + (1*10*10) -->
+                        <condition>180</condition> 
                     </conditions>
                 </level>
             </levels>
@@ -384,7 +384,7 @@
                         <xp>150</xp>
                     </rewards>
                     <conditions>
-                        <condition>190</condition> <!-- 3*10*1 + (2*10*10) -->
+                        <condition>190</condition>
                     </conditions>
                 </level>
 
@@ -403,7 +403,7 @@
                         <xp>200</xp>
                     </rewards>
                     <conditions>
-                        <condition>200</condition> <!-- 3*10*2 + (2*10*10) -->
+                        <condition>200</condition>
                     </conditions>
                 </level>
 
@@ -422,7 +422,7 @@
                         <xp>300</xp>
                     </rewards>
                     <conditions>
-                        <condition>210</condition> <!-- 3*10*3 + (2*10*10) -->
+                        <condition>210</condition>
                     </conditions>
                 </level>
 
@@ -441,7 +441,7 @@
                         <xp>400</xp>
                     </rewards>
                     <conditions>
-                        <condition>220</condition> <!-- 3*10*4 + (2*10*10) -->
+                        <condition>220</condition> 
                     </conditions>
                 </level>
 
@@ -452,7 +452,7 @@
                         <enemy>
                             <type>Final Mountain Guardian</type>
                             <health>150</health>
-                            <damage>30</damage>
+                            <damage>75</damage>
                         </enemy>
                     </enemies>
                     <rewards>
@@ -461,7 +461,7 @@
                         <special_item>Mountain Ring</special_item>
                     </rewards>
                     <conditions>
-                        <condition>230</condition> <!-- 3*10*5 + (2*10*10) -->
+                        <condition>230</condition> 
                     </conditions>
                 </level>
             </levels>

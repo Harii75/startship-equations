@@ -22,7 +22,7 @@ void InventoryManager::show_inventory() {
     } else {
         for (size_t i = 0; i < items.size(); ++i) {
             const auto& weapon = items[i];
-            std::cout << i << ": " << weapon.name << " (" << weapon.rarity << ")\n";
+            std::cout << i << ": " << weapon.name << " (" << weapon.rarity << ") - (+" << weapon.damage << ")\n";
         }
     }
 }
@@ -126,4 +126,22 @@ bool InventoryManager::unequip_weapon(int& playerDamage) {
 
 void InventoryManager::list_inventory() {
     show_inventory();
+}
+
+std::vector<Weapon> InventoryManager::filterWeaponsByRarity(const std::vector<Weapon>& weapons, const std::string& rarity) {
+    std::vector<Weapon> filteredWeapons;
+    std::copy_if(weapons.begin(), weapons.end(), std::back_inserter(filteredWeapons),
+                 [&rarity](const Weapon& weapon) {
+                     return weapon.rarity == rarity;
+                 });
+    return filteredWeapons;
+}
+
+Weapon InventoryManager::getRandomWeapon(const std::vector<Weapon>& filteredWeapons) {
+    if (filteredWeapons.empty()) {
+        throw std::runtime_error("No weapons available for the specified rarity.");
+    }
+    std::mt19937 gen(static_cast<unsigned int>(std::chrono::system_clock::now().time_since_epoch().count()));
+    std::uniform_int_distribution<> dis(0, filteredWeapons.size() - 1);
+    return filteredWeapons[dis(gen)];
 }
