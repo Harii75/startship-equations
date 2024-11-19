@@ -108,7 +108,8 @@ void fight(Player& player, Enemy& enemy) {
     // Outcome of the fight
     if (player.ship->currentHealth > 0) {
         std::cout << "\nYou've defeated the enemy!" << std::endl;
-        int overallKnowledge = (perfect*3)+(mid*2)+(bad*1)
+        int overallKnowledge = (perfect*3)+(mid*2)+(bad*1);
+        player.knowledge += overallKnowledge;
     } else {
         std::cout << "You were defeated by the enemy..." << std::endl;
         addHighScore(player.name, player.highscore);
