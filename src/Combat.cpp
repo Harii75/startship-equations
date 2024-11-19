@@ -29,6 +29,10 @@ double calculatePercentageDifference(double num1, double num2) {
 }
 
 void fight(Player& player, Enemy& enemy) {
+    int perfect = 0;
+    int mid = 0;
+    int bad = 0;
+
     while (player.ship->currentHealth > 0 && enemy.health > 0) {
         int overallPercentage = 0;
         int num1, num2, playerAnswer, correctAnswer;
@@ -57,18 +61,27 @@ void fight(Player& player, Enemy& enemy) {
         int inflictedDamage = player.calculateDamage(correctAnswer, playerAnswer);
         enemy.health -= inflictedDamage;
 
+        if (inflictedDamage > enemy.health){
+            player.knowledge += 5;
+        }
+
         overallPercentage = std::ceil(calculatePercentageDifference(playerAnswer, correctAnswer));
 
         // Update high score based on accuracy
         if (overallPercentage >= 0 && overallPercentage <= 25) {
             player.highscore += 15;
+            perfect += 1;
         } else if (overallPercentage >= 26 && overallPercentage <= 50) {
             player.highscore += 10;
+            mid += 1;
         } else if (overallPercentage >= 51 && overallPercentage <= 100) {
             player.highscore += 5;
+            bad += 1;
         } else if (overallPercentage >= 101 && overallPercentage <= 150) {
             player.highscore += 2;
         }
+
+        
 
         if (enemy.health < 0) {
             enemy.health = 0;
@@ -95,6 +108,7 @@ void fight(Player& player, Enemy& enemy) {
     // Outcome of the fight
     if (player.ship->currentHealth > 0) {
         std::cout << "\nYou've defeated the enemy!" << std::endl;
+        int overallKnowledge = (perfect*3)+(mid*2)+(bad*1)
     } else {
         std::cout << "You were defeated by the enemy..." << std::endl;
         addHighScore(player.name, player.highscore);
