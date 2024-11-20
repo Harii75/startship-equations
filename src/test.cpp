@@ -67,11 +67,11 @@ void testPlayer() {
     Player player("TestCaptain");
 
     assert(player.name == "TestCaptain");
-    assert(player.gold == 500);
+    assert(player.gold == 50);
     assert(player.level == 1);
     assert(player.xp == 0);
     assert(player.xpTreshold == 240);
-    assert(player.knowledge == 100);
+    assert(player.knowledge == 5);
     assert(player.ship != nullptr);
     assert(player.inventory != nullptr);
 
