@@ -3,7 +3,7 @@
 #include <algorithm>
 
 Player::Player(const std::string& name) 
-    : name(name), gold(500), level(1), xp(0), xpTreshold(240), knowledge(100), lastShopResetLevel(0) {
+    : name(name), gold(50), level(1), xp(0), xpTreshold(240), knowledge(5), lastShopResetLevel(0) {
     ship = new ShipManager();
     inventory = new InventoryManager();
 }

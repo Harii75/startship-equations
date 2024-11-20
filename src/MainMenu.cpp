@@ -83,9 +83,6 @@ void game_menu(Player& player) {
     std::vector<Stage> stages = FileLoader::loadStagesFromXML("data/levels.xml");   
     std::vector<Buff> buffs = FileLoader::loadBuffsFromXML("data/buffs.xml");
 
-    // Add random items to the player's inventory
-    player.inventory->add_random_items(weapons);
-
     waitForKeypress();
     do {
         clearScreen();

@@ -6,5 +6,6 @@
 #include <vector>
 
 void tradeMenu(Player& player, const std::vector<Buff>& buffs);
+int calculateSellPrice(const Weapon& weapon);
 
 #endif
