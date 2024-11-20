@@ -38,6 +38,7 @@ public:
         purchasedBuffs.push_back(buff);
     };
     void listBuffs() const;
+    void degradeBuffs();
 };
 
 #endif 

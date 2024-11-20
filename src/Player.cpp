@@ -1,5 +1,6 @@
 #include "Player.h"
 #include <iostream>
+#include <algorithm>
 
 Player::Player(const std::string& name) 
     : name(name), gold(500), level(1), xp(0), xpTreshold(240), knowledge(100), lastShopResetLevel(0) {
@@ -67,4 +68,19 @@ void Player::listBuffs() const {
     for (const auto& buff : purchasedBuffs) {
         std::cout << buff.name << " - Duration: " << buff.duration << " rounds\n";
     }
+}
+
+void Player::degradeBuffs() {
+    for (auto& buff : purchasedBuffs) {
+        buff.duration -= 1;
+    }
+
+    purchasedBuffs.erase(
+        std::remove_if(
+            purchasedBuffs.begin(),
+            purchasedBuffs.end(),
+            [](const Buff& buff) { return buff.duration <= 0; }
+        ),
+        purchasedBuffs.end()
+    );
 }

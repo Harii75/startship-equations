@@ -29,6 +29,7 @@ double calculatePercentageDifference(double num1, double num2) {
 }
 
 void fight(Player& player, Enemy& enemy) {
+    player.degradeBuffs();
     int perfect = 0;
     int mid = 0;
     int bad = 0;
