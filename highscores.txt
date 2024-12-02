@@ -1,10 +1,11 @@
+Jack-Sparrow 872
 Player2 800
 Player2 800
 Player1 500
 Player1 500
+Player3 300
 Player3 300
 Player3 300
 Nemdontodmeg 85
-Harika 45
-asd 5
+Hari 45
 asd 5

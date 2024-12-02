@@ -2,12 +2,31 @@
 #include "HighScore.h"
 #include <iostream>
 #include <ctime> 
-#include <conio.h>
+
+#ifdef _WIN32
+    #include <conio.h> 
+#else
+    #include <termios.h>
+    #include <unistd.h>
+#endif
 
 void waitForKeypress() {
     std::cout << "\nPress any button to continue...";
+    std::cout.flush(); 
+
+#ifdef _WIN32
     _getch();
-}
+#else
+    struct termios oldt, newt;
+    tcgetattr(STDIN_FILENO, &oldt); 
+    newt = oldt;
+    newt.c_lflag &= ~(ICANON | ECHO); 
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt); 
+
+    getchar(); 
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt); 
+#endif
 
 void clearScreen() {
 #ifdef _WIN32
