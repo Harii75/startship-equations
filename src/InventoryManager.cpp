@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <random>
+#include <numeric>
 #include <chrono>
 
 InventoryManager::InventoryManager() {}
