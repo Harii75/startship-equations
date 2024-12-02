@@ -13,6 +13,7 @@
 void waitForKeypress() {
     std::cout << "\nPress any button to continue...";
     std::cout.flush(); 
+    
 
 #ifdef _WIN32
     _getch();
@@ -27,7 +28,7 @@ void waitForKeypress() {
 
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt); 
 #endif
-
+}
 void clearScreen() {
 #ifdef _WIN32
     system("cls");
